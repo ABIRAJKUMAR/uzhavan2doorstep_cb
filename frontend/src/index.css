@@ -1,0 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-gray-50 text-gray-900 font-sans antialiased dark:bg-dark-900 dark:text-gray-100 transition-colors duration-300;
+  }
+}
+
+.glass {
+  @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-lg dark:bg-dark-800/70 dark:border-dark-700/50;
+}
+
+.glass-card {
+  @apply bg-white/80 backdrop-blur-lg border border-gray-200/50 shadow-xl rounded-2xl dark:bg-dark-800/80 dark:border-dark-700/50;
+}
