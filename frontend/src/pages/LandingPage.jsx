@@ -3,8 +3,10 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Leaf, TrendingUp, ShieldCheck, Truck } from 'lucide-react';
 import axios from 'axios';
+import { useSelector } from 'react-redux';
 
 const LandingPage = () => {
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
   const [stats, setStats] = useState({ farmers: 0, retailers: 0, totalQty: 0 });
 
   useEffect(() => {
@@ -48,9 +50,21 @@ const LandingPage = () => {
               Eliminate middlemen, ensure fair prices, and deliver fresh produce directly from farms to local shops with AI-powered insights.
             </p>
             <div className="flex justify-center gap-4">
-              <Link to="/register" className="inline-flex items-center justify-center px-8 py-4 text-base font-bold rounded-xl text-green-800 bg-white hover:bg-gray-50 transition-all shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:scale-105">
-                Join Now <ArrowRight className="ml-2 w-5 h-5" />
-              </Link>
+              {isAuthenticated ? (
+                <Link 
+                  to={user?.role === 'Farmer' ? '/farmer-dashboard' : `/${user?.role?.toLowerCase()}-dashboard`} 
+                  className="inline-flex items-center justify-center px-8 py-4 text-base font-bold rounded-xl text-green-800 bg-white hover:bg-gray-50 transition-all shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:scale-105"
+                >
+                  Go to Dashboard <ArrowRight className="ml-2 w-5 h-5" />
+                </Link>
+              ) : (
+                <Link 
+                  to="/register" 
+                  className="inline-flex items-center justify-center px-8 py-4 text-base font-bold rounded-xl text-green-800 bg-white hover:bg-gray-50 transition-all shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:scale-105"
+                >
+                  Join Now <ArrowRight className="ml-2 w-5 h-5" />
+                </Link>
+              )}
               <Link to="/marketplace" className="inline-flex items-center justify-center px-8 py-4 text-base font-bold rounded-xl text-white border-2 border-white/30 hover:bg-white/10 backdrop-blur-sm transition-all">
                 Browse Market
               </Link>
