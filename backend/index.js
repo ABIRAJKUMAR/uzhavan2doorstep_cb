@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import dns from 'dns';
+dns.setDefaultResultOrder('ipv4first');
 import helmet from 'helmet';
 import morgan from 'morgan';
 import { createServer } from 'http';
