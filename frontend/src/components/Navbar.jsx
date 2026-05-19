@@ -6,6 +6,7 @@ import { Leaf, Menu, X, ShoppingCart, User, Moon, Sun } from 'lucide-react';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(() => {
     return localStorage.getItem('theme') === 'dark';
   });
@@ -13,6 +14,16 @@ const Navbar = () => {
   const { items } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (isDropdownOpen && !event.target.closest('.profile-dropdown-container')) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener('click', handleOutsideClick);
+    return () => document.removeEventListener('click', handleOutsideClick);
+  }, [isDropdownOpen]);
 
   useEffect(() => {
     if (darkMode) {
@@ -35,8 +46,8 @@ const Navbar = () => {
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <Link to="/" className="flex flex-shrink-0 items-center">
-              <Leaf className="h-7 w-7 sm:h-8 sm:w-8 text-primary-500" />
-              <span className="ml-1.5 sm:ml-2 font-extrabold text-[15px] sm:text-xl tracking-tight text-gray-900 dark:text-white whitespace-nowrap">
+              <Leaf className="h-6 w-6 sm:h-7 sm:w-7 text-primary-500" />
+              <span className="ml-1.5 sm:ml-2 font-extrabold text-[13px] xs:text-[14px] sm:text-lg tracking-tight text-gray-900 dark:text-white whitespace-nowrap">
                 UZHAVAN 2 DOORSTEP
               </span>
             </Link>
@@ -66,16 +77,41 @@ const Navbar = () => {
             )}
 
             {isAuthenticated ? (
-              <div className="flex items-center space-x-4">
-                <div className="flex items-center space-x-2">
-                  <div className="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center text-primary-700 font-bold">
-                    {user.name.charAt(0)}
+              <div className="profile-dropdown-container relative">
+                <button 
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  className="flex items-center space-x-2 bg-gray-50 dark:bg-dark-850 hover:bg-gray-100 dark:hover:bg-dark-700 border border-gray-200/50 dark:border-dark-700 rounded-xl px-3 py-1.5 transition-colors"
+                >
+                  <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-primary-600 text-white flex items-center justify-center font-extrabold text-xs sm:text-sm">
+                    {user.name.charAt(0).toUpperCase()}
                   </div>
-                  <span className="text-sm font-medium dark:text-gray-200">{user.name}</span>
-                </div>
-                <button onClick={handleLogout} className="bg-red-50 text-red-600 hover:bg-red-100 dark:bg-red-900/30 dark:text-red-400 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
-                  Logout
+                  <span className="text-sm font-semibold text-gray-700 dark:text-gray-200 hidden md:inline">My Account</span>
                 </button>
+
+                {isDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-dark-800 border border-gray-150 dark:border-dark-700 rounded-xl shadow-xl py-2 z-50">
+                    <div className="px-4 py-2 border-b border-gray-100 dark:border-dark-700">
+                      <p className="text-xs text-gray-400">Signed in as</p>
+                      <p className="text-sm font-bold text-gray-800 dark:text-white truncate">{user.name}</p>
+                      <span className="inline-block mt-1 text-[10px] font-bold bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300 px-2 py-0.5 rounded-full uppercase">
+                        {user.role}
+                      </span>
+                    </div>
+                    <Link 
+                      to={user.role === 'Farmer' ? '/farmer-dashboard' : `/${user.role.toLowerCase()}-dashboard`}
+                      onClick={() => setIsDropdownOpen(false)}
+                      className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-dark-700"
+                    >
+                      Dashboard
+                    </Link>
+                    <button 
+                      onClick={() => { handleLogout(); setIsDropdownOpen(false); }}
+                      className="block w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                )}
               </div>
             ) : (
               <div className="flex items-center space-x-4">
