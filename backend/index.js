@@ -13,6 +13,7 @@ import paymentRoutes from './src/routes/paymentRoutes.js';
 import marketPriceRoutes from './src/routes/marketPriceRoutes.js';
 import reviewRoutes from './src/routes/reviewRoutes.js';
 import { startMarketPriceCron, triggerManualFetch } from './src/jobs/marketPriceCron.js';
+import { User, Order } from './src/models/index.js';
 
 dotenv.config();
 
@@ -36,6 +37,18 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/payment', paymentRoutes);
 app.use('/api/market-prices', marketPriceRoutes);
 app.use('/api/reviews', reviewRoutes);
+
+app.get('/api/stats', async (req, res) => {
+  try {
+    const farmers = await User.count({ where: { role: 'Farmer' } });
+    const retailers = await User.count({ where: { role: 'Retailer' } });
+    const totalQty = await Order.sum('quantity', { where: { status: 'Delivered' } }) || 0;
+    res.json({ farmers, retailers, totalQty });
+  } catch (err) {
+    console.error('Stats fetch error:', err);
+    res.status(500).json({ error: 'Server error fetching stats' });
+  }
+});
 
 // Socket.io
 io.on('connection', (socket) => {

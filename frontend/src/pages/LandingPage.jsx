@@ -1,9 +1,23 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Leaf, TrendingUp, ShieldCheck, Truck } from 'lucide-react';
+import axios from 'axios';
 
 const LandingPage = () => {
+  const [stats, setStats] = useState({ farmers: 0, retailers: 0, totalQty: 0 });
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/stats`);
+        setStats(res.data);
+      } catch (err) {
+        console.error('Failed to fetch live stats', err);
+      }
+    };
+    fetchStats();
+  }, []);
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
@@ -77,9 +91,9 @@ const LandingPage = () => {
       <section className="py-20 bg-primary-600 dark:bg-primary-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            <StatCard number="10k+" label="Active Farmers" />
-            <StatCard number="5k+" label="Retail Partners" />
-            <StatCard number="50k+" label="Tons Delivered" />
+            <StatCard number={stats.farmers} label="Active Farmers" />
+            <StatCard number={stats.retailers} label="Retail Partners" />
+            <StatCard number={stats.totalQty >= 1000 ? `${(stats.totalQty / 1000).toFixed(1)} Tons` : `${stats.totalQty} kg`} label="Produce Delivered" />
             <StatCard number="100%" label="Transparent" />
           </div>
         </div>
