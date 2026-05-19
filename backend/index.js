@@ -2,6 +2,25 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import dns from 'dns';
+// Disable IPv6 resolution globally to force Nodemailer and other packages to connect via IPv4
+dns.resolve6 = (hostname, options, callback) => {
+  const cb = typeof options === 'function' ? options : callback;
+  process.nextTick(() => cb(new Error('IPv6 resolution disabled')));
+};
+if (dns.promises && dns.promises.resolve6) {
+  dns.promises.resolve6 = async () => {
+    throw new Error('IPv6 resolution disabled');
+  };
+}
+const originalResolve = dns.resolve;
+dns.resolve = (hostname, rrtype, callback) => {
+  const type = typeof rrtype === 'string' ? rrtype : 'A';
+  const cb = typeof rrtype === 'function' ? rrtype : callback;
+  if (type === 'AAAA') {
+    return process.nextTick(() => cb(new Error('IPv6 resolution disabled')));
+  }
+  return originalResolve(hostname, rrtype, cb);
+};
 dns.setDefaultResultOrder('ipv4first');
 import helmet from 'helmet';
 import morgan from 'morgan';
