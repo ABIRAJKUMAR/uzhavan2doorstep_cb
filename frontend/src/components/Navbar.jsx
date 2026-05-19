@@ -45,19 +45,18 @@ const Navbar = () => {
       <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-12">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
-            <Link 
-              to="/" 
+            <div 
               onClick={() => {
                 setIsOpen(false);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }} 
-              className="flex flex-shrink-0 items-center"
+              className="flex flex-shrink-0 items-center cursor-pointer"
             >
               <Leaf className="h-6 w-6 sm:h-7 sm:w-7 text-primary-500" />
               <span className="ml-1.5 sm:ml-2 font-extrabold text-[13px] xs:text-[14px] sm:text-lg tracking-tight text-gray-900 dark:text-white whitespace-nowrap">
                 UZHAVAN 2 DOORSTEP
               </span>
-            </Link>
+            </div>
             <div className="hidden md:ml-10 md:flex md:space-x-8">
               <Link to="/" className="text-gray-600 dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-400 px-3 py-2 rounded-md text-sm font-medium transition-colors">Home</Link>
               <Link to="/marketplace" className="text-gray-600 dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-400 px-3 py-2 rounded-md text-sm font-medium transition-colors">Marketplace</Link>
