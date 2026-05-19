@@ -1,6 +1,12 @@
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
+import dns from 'dns';
+
 dotenv.config();
+
+const ipv4Lookup = (hostname, options, callback) => {
+  return dns.lookup(hostname, { family: 4 }, callback);
+};
 
 export const sendInvoiceEmail = async (toEmail, pdfBuffer, orderId) => {
   try {
@@ -25,6 +31,7 @@ export const sendInvoiceEmail = async (toEmail, pdfBuffer, orderId) => {
         host: 'smtp.gmail.com',
         port: 587,
         secure: false, // true for 465, false for other ports (will use STARTTLS)
+        lookup: ipv4Lookup,
         auth: {
           user: process.env.EMAIL_USER,
           pass: process.env.EMAIL_PASS
@@ -75,6 +82,7 @@ const getTransporter = async () => {
       host: 'smtp.gmail.com',
       port: 587,
       secure: false,
+      lookup: ipv4Lookup,
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
