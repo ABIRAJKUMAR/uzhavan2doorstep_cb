@@ -14,7 +14,7 @@ export const sendInvoiceEmail = async (toEmail, pdfBuffer, orderId) => {
     }
     await resend.emails.send({
       from: FROM,
-      to: [process.env.EMAIL_USER || toEmail],
+      to: [toEmail],
       subject: `Your Invoice for Order #${orderId} - UZHAVAN 2 DOORSTEP`,
       text: `Hello,\n\nThank you for your order! Please find attached the invoice for your recent order #${orderId}.\n\nBest Regards,\nUZHAVAN 2 DOORSTEP Team`,
       attachments: [
@@ -38,7 +38,7 @@ export const sendLowStockEmail = async (farmerEmail, product) => {
     }
     await resend.emails.send({
       from: FROM,
-      to: [process.env.EMAIL_USER || farmerEmail],
+      to: [farmerEmail],
       subject: `🚨 Low Stock Alert: ${product.name} - UZHAVAN 2 DOORSTEP`,
       text: `Hello,\n\nThis is an automated alert that your product "${product.name}" is running low on stock. You currently have only ${product.quantity} ${product.unit} left.\n\nPlease update your inventory soon to continue receiving orders.\n\nBest Regards,\nUZHAVAN 2 DOORSTEP Team`,
     });
@@ -60,7 +60,7 @@ export const sendNewOrderEmailToFarmer = async (farmerEmail, order, product, qua
 
     await resend.emails.send({
       from: FROM,
-      to: [process.env.EMAIL_USER || farmerEmail],
+      to: [farmerEmail],
       subject: `🎉 New Order Received! ${product.name} - UZHAVAN 2 DOORSTEP`,
       text: `Hello,\n\nGreat news! You have received a new order from ${buyerName}.\n\nOrder Details:\n- Product: ${product.name}\n- Quantity: ${quantity} ${product.unit}\n- Total Value: ₹${product.price * quantity}\n- Order ID: ${order.id}\n- ${paymentInfo}\n\nPlease check your Farmer Dashboard to process this order.\n\nBest Regards,\nUZHAVAN 2 DOORSTEP Team`,
     });
@@ -75,7 +75,7 @@ export const sendOrderAcceptedEmail = async (buyerEmail, order, product, farmerN
     if (!process.env.RESEND_API_KEY) return;
     await resend.emails.send({
       from: FROM,
-      to: [process.env.EMAIL_USER || buyerEmail],
+      to: [buyerEmail],
       subject: `✅ Order Accepted! ${product.name} - UZHAVAN 2 DOORSTEP`,
       text: `Hello,\n\nGood news! Your order has been ACCEPTED by the farmer (${farmerName}).\n\nOrder Details:\n- Product: ${product.name}\n- Quantity: ${order.quantity} ${product.unit}\n- Total Value: ₹${order.totalAmount}\n- Order ID: ${order.orderNumber || order.id}\n\nThe farmer is now preparing your order for shipment.\n\nBest Regards,\nUZHAVAN 2 DOORSTEP Team`,
     });
@@ -90,7 +90,7 @@ export const sendOrderShippedEmail = async (buyerEmail, order, product, farmerNa
     if (!process.env.RESEND_API_KEY) return;
     await resend.emails.send({
       from: FROM,
-      to: [process.env.EMAIL_USER || buyerEmail],
+      to: [buyerEmail],
       subject: `🚚 Order Shipped! ${product.name} - UZHAVAN 2 DOORSTEP`,
       text: `Hello,\n\nGreat news! Your order has been SHIPPED by the farmer (${farmerName}).\n\nOrder Details:\n- Product: ${product.name}\n- Quantity: ${order.quantity} ${product.unit}\n- Order ID: ${order.orderNumber || order.id}\n\nYour order is on its way to your delivery address.\n\nBest Regards,\nUZHAVAN 2 DOORSTEP Team`,
     });
