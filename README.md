@@ -1,26 +1,29 @@
-# 🌾 UZHAVAN 2 DOORSTEP - Modern Agritech Supply Chain Platform
+# 🌾 UZHAVAN 2 DOORSTEP 🌾
+### Connecting Farmers Directly to Retailers & Customers
 
-A state-of-the-art, real-time, full-stack Agritech platform designed to bridge the gap between farmers, retailers, and direct customers. By eliminating traditional middlemen, providing AI-driven price calculations, integrating live government market data, and enabling farm-to-table traceability via QR codes, **UZHAVAN 2 DOORSTEP** empowers farmers with fair pricing and retailers with fresh quality.
+UZHAVAN 2 DOORSTEP is a premium, full-stack AgTech supply chain platform designed to eliminate middlemen, ensure fair pricing, and deliver fresh produce directly from farms to local shops and households. Powered by real-time Indian Government market data (Agmarknet), automated invoice generation, transactional notifications, and end-to-end QR code traceability.
 
 ---
 
 ## 🚀 Key Features
 
-### 👨‍🌾 Farmer Ecosystem
-- **Inventory Management**: Add and manage crop listings with real-time stock levels, quality grades, and images.
-- **Analytics & Earnings**: Track total volume sold, pending orders, and total revenue directly on a dedicated dashboard.
-- **Automated Invoices**: Batched PDF invoices generated automatically upon order fulfillment.
+### 1. Real-time Market Price Ticker (Agmarknet API)
+* Integrated with the official Indian Government API (`data.gov.in`) to fetch daily crop prices across Tamil Nadu.
+* Dynamically updates 84+ unique commodities (Tomato, Onion, Potato, Chilli, etc.) matching localized market rates (Paramakudi, Ramanathapuram, Katpadi Uzhavar Sandhais).
+* Runs on an automated daily cron job at 6:00 AM, converting values from Rs. per quintal to Rs. per kg.
 
-### 🏪 Retailer & Customer Marketplace
-- **Dynamic Marketplace**: Search, filter, and buy organic or high-grade crops directly from nearby farms.
-- **Smart Checkout & Payments**: Safe online transactions powered by Razorpay checkout gateway.
-- **Order Tracking & QR Traceability**: Scan product QR codes to view the origin farm, harvest details, quality standards, and transportation log.
+### 2. End-to-End QR Traceability
+* Every product listed features a dynamic, automatically generated QR code.
+* Retailers and customers can scan the code to instantly view complete transparency details: farmer profile, harvest location, harvest date, organic certification status, and transport details.
 
-### 🌐 Smart Integrations
-- **Live Govt. Market Rates**: Real-time commodity price synchronization via the official Indian Government Agmarknet API (data.gov.in) with automatic unit conversion (Quintal to Kg).
-- **Automated Transactional Emails**: Low-stock alerts, order confirmations, invoice delivery, and shipping updates powered by Brevo (SMTP).
-- **Socket.io Live Sync**: Real-time order updates, inventory changes, and notifications.
-- **Dynamic System Statistics**: Landing page showing real-time statistics of active farmers, retail partners, and total metric tonnage of produce delivered.
+### 3. Role-Based Dashboards (Farmer, Retailer, Customer)
+* **Farmers:** Crop inventory management, stock level indicators, low-stock alerts, active sales metrics, and order fulfillment controls.
+* **Retailers & Customers:** Complete marketplace access, dynamic shopping cart, structured checkout, order history pipelines, and PDF invoices.
+
+### 4. Interactive Transactional Systems
+* **Payment Integration:** Ready for payment processing.
+* **Brevo Email Notifications:** Fully integrated transaction emails notifying buyers on order placement and farmers on stock thresholds.
+* **Dynamic PDF Invoices:** Built-in client-side and server-side PDF generator to instantly produce beautiful, shareable order invoices.
 
 ---
 
@@ -28,68 +31,95 @@ A state-of-the-art, real-time, full-stack Agritech platform designed to bridge t
 
 | Layer | Technologies Used |
 |---|---|
-| **Frontend** | React.js (Vite), Redux Toolkit, Tailwind CSS, Framer Motion, Axios, React Router, Lucide Icons |
-| **Backend** | Node.js, Express.js, Socket.io, Sequelize ORM, JWT, node-cron |
-| **Database** | Supabase (PostgreSQL Cloud) |
-| **Media Hosting**| Cloudinary |
-| **Gateways & APIs**| Razorpay (Payment Gateway), Brevo (Transactional Mail API), Agmarknet API (Govt. Market Prices) |
+| **Frontend** | React (Vite), Redux Toolkit, Tailwind CSS, Framer Motion, Lucide Icons, Axios |
+| **Backend** | Node.js, Express.js, Sequelize ORM, PostgreSQL, Socket.io, Node-cron |
+| **Integrations** | Cloudinary (Image Cloud), Brevo SMTP (Transactional Email), Razorpay, Agmarknet API |
+| **Deployment** | Vercel (Frontend), Render (Backend + Database Cron) |
 
 ---
 
-## ⚙️ Environmental Configurations (`.env`)
+## 📂 Project Architecture
+
+```
+UZHAVAN2DOORSTEP/
+├── backend/
+│   ├── src/
+│   │   ├── config/          # Sequelize & Database Configuration
+│   │   ├── controllers/     # API Route Controllers (Auth, Orders, Products, Payments)
+│   │   ├── jobs/            # Node-cron Daily Government Market Ticker Job
+│   │   ├── models/          # Sequelize PostgreSQL Models (User, Product, Order, Price)
+│   │   ├── routes/          # REST Endpoint Routers
+│   │   └── utils/           # Utility Services (Email, PDF, Cloudinary)
+│   ├── index.js             # Express App Entrance
+│   └── .env                 # Server Environmental Configurations
+├── frontend/
+│   ├── public/              # Static Icons, SVG Favicons, and Backgrounds
+│   ├── src/
+│   │   ├── components/      # Shared components (Navbar, ProtectedRoutes, Ticker)
+│   │   ├── pages/           # Pages (LandingPage, Marketplace, Dashboards, Traceability)
+│   │   ├── store/           # Redux State Management Store
+│   │   ├── App.jsx          # Route Mapping & ScrollToTop handler
+│   │   └── main.jsx         # React DOM Render Engine
+│   └── tailwind.config.js   # Custom Design Palette & Dark Mode tokens
+```
+
+---
+
+## ⚙️ Environment Configuration
 
 ### Backend Setup (`backend/.env`)
-Create a `.env` file inside the `backend` folder and populate it with the following:
+Create a `.env` file in the `backend` directory with the following variables:
 ```env
 PORT=5000
-DB_HOST=your-supabase-postgres-host
+DB_HOST=your-database-host
 DB_PORT=5432
 DB_USER=your-database-user
 DB_PASSWORD=your-database-password
 DB_NAME=postgres
-JWT_SECRET=your-jwt-auth-secret
-CLOUDINARY_CLOUD_NAME=your-cloudinary-name
-CLOUDINARY_API_KEY=your-cloudinary-key
-CLOUDINARY_API_SECRET=your-cloudinary-secret
-AGMARKNET_API_KEY=your-data-gov-in-api-key
-EMAIL_USER=your-email-address
-EMAIL_PASS=your-email-app-password
-RAZORPAY_KEY_ID=your-razorpay-key-id
-RAZORPAY_KEY_SECRET=your-razorpay-secret
-BREVO_API_KEY=your-brevo-api-key
+JWT_SECRET=your_jwt_secret_token
+CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+CLOUDINARY_API_KEY=your_cloudinary_api_key
+CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+AGMARKNET_API_KEY=your_data_gov_in_api_key
+EMAIL_USER=your_gmail_user
+EMAIL_PASS=your_gmail_app_password
+RAZORPAY_KEY_ID=your_razorpay_key_id
+RAZORPAY_KEY_SECRET=your_razorpay_key_secret
+BREVO_API_KEY=your_brevo_api_key
 ```
 
 ### Frontend Setup (`frontend/.env`)
-Create a `.env` file inside the `frontend` folder and populate it with the following:
+Create a `.env` file in the `frontend` directory:
 ```env
 VITE_API_URL=http://localhost:5000/api
-VITE_SOCKET_URL=http://localhost:5000
 ```
 
 ---
 
-## 🏃 Setup & Installation
+## 💻 Local Development Setup
 
-### Prerequisite
-Ensure you have **Node.js** (v18+) and **NPM** installed on your system.
+### Step 1: Clone & Configure Database
+Ensure you have a PostgreSQL database instance running locally or via a cloud hosting provider (e.g., Supabase, Neon).
 
-### 1. Run Backend Server
+### Step 2: Initialize Backend
 ```bash
 cd backend
 npm install
 npm run dev
 ```
-- Server will initialize database connections, run schema synchronizations, fetch government market rates, and listen on `http://localhost:5000`.
+*The backend will sync all Sequelize models with the database, trigger a startup test fetch to Agmarknet to populate initial rates, and listen on port `5000`.*
 
-### 2. Run Frontend Web App
+### Step 3: Initialize Frontend
 ```bash
-cd frontend
+cd ../frontend
 npm install
 npm run dev
 ```
-- Open your browser and navigate to `http://localhost:5173`.
+*The frontend development server will launch on `http://localhost:5173`.*
 
 ---
 
-## 🛡️ License & Copyright
-&copy; 2026 UZHAVAN 2 DOORSTEP. All rights reserved. Designed with ❤️ for sustainable agricultural trade.
+## 🎨 Premium Visual Standards
+* **Adaptive Dark Mode:** Fully responds to system preferences or manual navbar toggles with unified slate dark color tokens (`dark:bg-dark-900`, `dark:bg-dark-800`).
+* **Glassmorphism Effects:** Frosted glass navbar header layouts leveraging backdrop-filters for a highly modern aesthetic.
+* **Fluid Interactions:** Smooth micro-animations powered by `framer-motion` for cards, buttons, status badges, and loading states.
