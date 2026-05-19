@@ -80,7 +80,7 @@ const Navbar = () => {
               <div className="profile-dropdown-container relative">
                 <button 
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  className="flex items-center space-x-2 bg-gray-50 dark:bg-dark-850 hover:bg-gray-100 dark:hover:bg-dark-700 border border-gray-200/50 dark:border-dark-700 rounded-xl px-3 py-1.5 transition-colors"
+                  className="flex items-center space-x-2 bg-gray-50 dark:bg-dark-800 hover:bg-gray-100 dark:hover:bg-dark-700 border border-gray-200/50 dark:border-dark-700 rounded-xl px-3 py-1.5 transition-colors"
                 >
                   <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-primary-600 text-white flex items-center justify-center font-extrabold text-xs sm:text-sm">
                     {user.name.charAt(0).toUpperCase()}
