@@ -20,9 +20,11 @@ export const sendInvoiceEmail = async (toEmail, pdfBuffer, orderId) => {
         },
       });
     } else {
-      // Use Real Gmail
+      // Use Real Gmail with explicit host and port (587) to avoid ECONNREFUSED on port 465
       transporter = nodemailer.createTransport({
-        service: 'gmail',
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false, // true for 465, false for other ports (will use STARTTLS)
         auth: {
           user: process.env.EMAIL_USER,
           pass: process.env.EMAIL_PASS
