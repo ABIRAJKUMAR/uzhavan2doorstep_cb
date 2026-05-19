@@ -86,13 +86,13 @@ const Navbar = () => {
               </div>
             )}
           </div>
-          <div className="-mr-2 flex md:hidden items-center space-x-4">
+          <div className="-mr-2 flex md:hidden items-center space-x-2">
              <button onClick={() => setDarkMode(!darkMode)} className="p-2 rounded-full text-gray-500 hover:bg-gray-100 dark:hover:bg-dark-700 dark:text-gray-400 transition-colors">
                 {darkMode ? <Sun size={20} /> : <Moon size={20} />}
              </button>
              
              {isAuthenticated && (user?.role === 'Retailer' || user?.role === 'Customer') && (
-                <Link to={`/${user.role.toLowerCase()}-dashboard`} className="relative p-2 text-gray-500 hover:text-primary-500 transition-colors">
+                <Link to={`/${user.role.toLowerCase()}-dashboard`} className="relative p-2 text-gray-500 hover:text-primary-500 transition-colors mr-1">
                   <ShoppingCart size={24} />
                   {items.length > 0 && (
                     <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-primary-600 rounded-full">{items.length}</span>
@@ -102,7 +102,7 @@ const Navbar = () => {
 
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 dark:hover:bg-dark-700 focus:outline-none ml-2"
+              className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 dark:hover:bg-dark-700 focus:outline-none"
             >
               {isOpen ? <X className="block h-6 w-6" /> : <Menu className="block h-6 w-6" />}
             </button>
