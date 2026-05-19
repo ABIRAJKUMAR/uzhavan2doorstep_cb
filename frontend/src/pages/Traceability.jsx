@@ -2,7 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import { motion } from 'framer-motion';
-import { MapPin, User, Calendar, ShieldCheck, Leaf, ArrowLeft, Truck, Package, Store } from 'lucide-react';
+import { MapPin, User, Calendar, ShieldCheck, Leaf, ArrowLeft, Truck, Package, Store, Navigation } from 'lucide-react';
+import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
+
+// Fix leaflet marker icon issue in React
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
+  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+});
 
 const Traceability = () => {
   const { id } = useParams();
@@ -138,6 +149,34 @@ const Traceability = () => {
             </div>
           </motion.div>
         ))}
+
+        {/* Live Map Integration */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="bg-white dark:bg-dark-800 rounded-3xl overflow-hidden shadow-xl border border-gray-100 dark:border-dark-700 p-8"
+        >
+          <div className="flex items-center gap-3 mb-6">
+            <div className="p-3 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-xl">
+              <Navigation size={24} />
+            </div>
+            <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Live Route Map</h3>
+          </div>
+          <div className="h-[400px] w-full rounded-2xl overflow-hidden border border-gray-200 dark:border-dark-600 relative z-0">
+            {/* Simulating coordinates for the route */}
+            <MapContainer center={[11.1271, 78.6569]} zoom={7} style={{ height: '100%', width: '100%' }}>
+              <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+              <Marker position={[10.3624, 77.9695]}>
+                <Popup>Farmer Location</Popup>
+              </Marker>
+              <Marker position={[13.0827, 80.2707]}>
+                <Popup>Delivery Location</Popup>
+              </Marker>
+              <Polyline positions={[[10.3624, 77.9695], [13.0827, 80.2707]]} color="#10b981" weight={4} dashArray="10, 10" />
+            </MapContainer>
+          </div>
+        </motion.div>
       </div>
 
       <div className="text-center mt-12">

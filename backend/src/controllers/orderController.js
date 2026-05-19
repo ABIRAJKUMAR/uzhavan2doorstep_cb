@@ -1,11 +1,12 @@
 import { Order, Product, User } from '../models/index.js';
 import { generateInvoicePDF } from '../utils/pdfGenerator.js';
-import { sendInvoiceEmail } from '../utils/emailService.js';
+import { sendInvoiceEmail, sendLowStockEmail, sendNewOrderEmailToFarmer, sendOrderAcceptedEmail, sendOrderShippedEmail } from '../utils/emailService.js';
 import { sendOrderSMS } from '../utils/smsService.js';
+
 
 export const createOrder = async (req, res) => {
   try {
-    const { productId, quantity, deliveryAddress } = req.body;
+    const { productId, quantity, deliveryAddress, paymentMethod } = req.body;
     
     const product = await Product.findByPk(productId);
     if (!product) return res.status(404).json({ message: 'Product not found' });
@@ -22,7 +23,9 @@ export const createOrder = async (req, res) => {
       productId,
       quantity,
       totalAmount,
-      deliveryAddress
+      deliveryAddress,
+      paymentMethod: paymentMethod || 'Online',
+      paymentStatus: paymentMethod === 'COD' ? 'Pending' : 'Paid',
     });
 
     // Optionally update product quantity here or when accepted
@@ -33,17 +36,22 @@ export const createOrder = async (req, res) => {
     const retailer = await User.findByPk(req.user.id);
     const farmer = await User.findByPk(product.farmerId);
 
-    try {
-      // Generate Invoice PDF
-      const pdfBuffer = await generateInvoicePDF(order, retailer, product, farmer);
+    // Run notifications asynchronously in the background so it doesn't block the frontend
+    (async () => {
+      try {
+        const pdfBuffer = await generateInvoicePDF(order, retailer, product, farmer);
+        if (retailer.email) sendInvoiceEmail(retailer.email, pdfBuffer, order.id);
+        
+        if (farmer.email) sendNewOrderEmailToFarmer(farmer.email, order, product, quantity, retailer.name, paymentMethod || 'Online');
 
-      // Send Email to Retailer with PDF Attached
-      if (retailer.email) {
-        await sendInvoiceEmail(retailer.email, pdfBuffer, order.id);
+        const LOW_STOCK_THRESHOLD = 20;
+        if (product.quantity < LOW_STOCK_THRESHOLD && farmer.email) {
+          sendLowStockEmail(farmer.email, product);
+        }
+      } catch (notifErr) {
+        console.error('Notification Error:', notifErr.message);
       }
-    } catch (notifErr) {
-      console.error('Notification Error (Ignored for order creation):', notifErr.message);
-    }
+    })();
 
     res.status(201).json(order);
   } catch (error) {
@@ -53,7 +61,8 @@ export const createOrder = async (req, res) => {
 
 export const createBatchOrder = async (req, res) => {
   try {
-    const { items, deliveryAddress } = req.body;
+    const { items, deliveryAddress, paymentMethod } = req.body;
+    const isCOD = paymentMethod === 'COD';
     
     if (!items || items.length === 0) return res.status(400).json({ message: 'No items in order' });
 
@@ -79,7 +88,9 @@ export const createBatchOrder = async (req, res) => {
         productId: product.id,
         quantity: item.quantity,
         totalAmount,
-        deliveryAddress
+        deliveryAddress,
+        paymentMethod: isCOD ? 'COD' : 'Online',
+        paymentStatus: isCOD ? 'Pending' : 'Paid',
       });
 
       product.quantity -= item.quantity;
@@ -97,14 +108,29 @@ export const createBatchOrder = async (req, res) => {
       return res.status(400).json({ message: 'Could not process any items. Insufficient stock.' });
     }
 
-    try {
-      const pdfBuffer = await generateInvoicePDF(sharedOrderNumber, createdOrders, buyer, productsMap, farmersMap);
-      if (buyer.email) {
-        await sendInvoiceEmail(buyer.email, pdfBuffer, sharedOrderNumber);
+    // Run batch notifications asynchronously in the background
+    (async () => {
+      try {
+        const pdfBuffer = await generateInvoicePDF(sharedOrderNumber, createdOrders, buyer, productsMap, farmersMap);
+        if (buyer.email) sendInvoiceEmail(buyer.email, pdfBuffer, sharedOrderNumber);
+
+        const LOW_STOCK_THRESHOLD = 20;
+        for (const order of createdOrders) {
+          const product = productsMap[order.productId];
+          const farmer = farmersMap[product.farmerId];
+          
+          if (farmer && farmer.email) {
+            sendNewOrderEmailToFarmer(farmer.email, order, product, order.quantity, buyer.name, isCOD ? 'COD' : 'Online');
+            
+            if (product.quantity < LOW_STOCK_THRESHOLD) {
+              sendLowStockEmail(farmer.email, product);
+            }
+          }
+        }
+      } catch (notifErr) {
+        console.error('Batch Notification Error:', notifErr.message);
       }
-    } catch (notifErr) {
-      console.error('Batch Notification Error:', notifErr.message);
-    }
+    })();
 
     res.status(201).json({ message: 'Orders created successfully', orders: createdOrders });
   } catch (error) {
@@ -177,6 +203,27 @@ export const updateOrderStatus = async (req, res) => {
 
     order.status = status;
     await order.save();
+
+    // Trigger email asynchronously if status is Accepted or Shipped
+    if (status === 'Accepted' || status === 'Shipped') {
+      (async () => {
+        try {
+          const product = await Product.findByPk(order.productId);
+          const buyer = await User.findByPk(order.retailerId);
+          const farmer = await User.findByPk(order.farmerId);
+          
+          if (buyer && buyer.email && product && farmer) {
+            if (status === 'Accepted') {
+              sendOrderAcceptedEmail(buyer.email, order, product, farmer.name);
+            } else if (status === 'Shipped') {
+              sendOrderShippedEmail(buyer.email, order, product, farmer.name);
+            }
+          }
+        } catch (emailErr) {
+          console.error('Error in status update email background task:', emailErr);
+        }
+      })();
+    }
 
     res.json(order);
   } catch (error) {

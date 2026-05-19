@@ -6,16 +6,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addToCart } from '../redux/slices/cartSlice';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import ReviewModal from '../components/ReviewModal';
 
 const Marketplace = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [category, setCategory] = useState('All');
+  const [selectedProductForReview, setSelectedProductForReview] = useState(null);
   
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user } = useSelector(state => state.auth);
+  const { items } = useSelector(state => state.cart);
 
   useEffect(() => {
     fetchProducts();
@@ -43,6 +46,14 @@ const Marketplace = () => {
       toast.error('Only Retailers and Customers can buy products');
       return;
     }
+    const existingCartItem = items.find(item => item.id === product.id);
+    const currentCartQty = existingCartItem ? existingCartItem.cartQuantity : 0;
+    
+    if (currentCartQty >= product.quantity) {
+      toast.error(`Only ${product.quantity} ${product.unit} in stock!`);
+      return;
+    }
+
     dispatch(addToCart({ ...product, cartQuantity: 1 }));
     toast.success(`${product.name} added to cart`);
   };
@@ -120,12 +131,20 @@ const Marketplace = () => {
                   <span className="mr-4">Stock: {product.quantity} {product.unit}</span>
                   {product.farmer && <span>By {product.farmer.name}</span>}
                 </div>
-                <button 
-                  onClick={() => handleAddToCart(product)}
-                  className="w-full flex items-center justify-center gap-2 py-3 bg-primary-50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-400 rounded-xl font-bold hover:bg-primary-600 hover:text-white transition-colors"
-                >
-                  <ShoppingCart size={18} /> Add to Cart
-                </button>
+                <div className="flex gap-2">
+                  <button 
+                    onClick={() => handleAddToCart(product)}
+                    className="flex-1 flex items-center justify-center gap-2 py-3 bg-primary-50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-400 rounded-xl font-bold hover:bg-primary-600 hover:text-white transition-colors"
+                  >
+                    <ShoppingCart size={18} /> Add
+                  </button>
+                  <button 
+                    onClick={() => setSelectedProductForReview(product)}
+                    className="flex-1 flex items-center justify-center gap-2 py-3 border border-gray-200 dark:border-dark-600 text-gray-700 dark:text-gray-300 rounded-xl font-bold hover:bg-gray-50 dark:hover:bg-dark-700 transition-colors"
+                  >
+                    <Star size={18} /> Reviews
+                  </button>
+                </div>
               </div>
             </motion.div>
           ))}
@@ -137,6 +156,12 @@ const Marketplace = () => {
           No products found matching your criteria.
         </div>
       )}
+
+      <ReviewModal 
+        isOpen={!!selectedProductForReview} 
+        onClose={() => setSelectedProductForReview(null)} 
+        product={selectedProductForReview} 
+      />
     </div>
   );
 };

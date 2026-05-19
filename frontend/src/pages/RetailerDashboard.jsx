@@ -5,6 +5,7 @@ import { clearCart, removeFromCart, updateQuantity } from '../redux/slices/cartS
 import { ShoppingBag, Truck, CheckCircle, Trash2, Plus, Minus } from 'lucide-react';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
+import PaymentModal from '../components/PaymentModal';
 
 const RetailerDashboard = () => {
   const { token } = useSelector(state => state.auth);
@@ -12,6 +13,7 @@ const RetailerDashboard = () => {
   const dispatch = useDispatch();
   const [orders, setOrders] = useState([]);
   const [activeTab, setActiveTab] = useState('cart');
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
 
   useEffect(() => {
     fetchOrders();
@@ -28,17 +30,23 @@ const RetailerDashboard = () => {
     }
   };
 
-  const handleCheckout = async () => {
+  const handleCheckoutClick = () => {
     if (items.length === 0) return;
+    setIsPaymentModalOpen(true);
+  };
+
+  const handlePaymentSuccess = async (paymentMethod = 'Online') => {
+    setIsPaymentModalOpen(false);
     try {
-      const checkoutToast = toast.loading('Placing your order...');
+      const checkoutToast = toast.loading('Processing order...');
       await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/orders/batch`, {
         items: items.map(item => ({
           productId: item.id,
           quantity: item.cartQuantity,
           price: item.price
         })),
-        deliveryAddress: 'Home/Shop Address' // In reality fetched from user
+        deliveryAddress: 'Home/Shop Address',
+        paymentMethod,
       }, {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -49,7 +57,7 @@ const RetailerDashboard = () => {
       fetchOrders();
     } catch (err) {
       console.error(err);
-      toast.error('Checkout failed. Please try again.', { id: checkoutToast });
+      toast.error(err.response?.data?.message || 'Checkout failed. Please try again.', { id: checkoutToast });
     }
   };
 
@@ -103,7 +111,13 @@ const RetailerDashboard = () => {
                         {item.cartQuantity}
                       </span>
                       <button 
-                        onClick={() => dispatch(updateQuantity({id: item.id, quantity: item.cartQuantity + 1}))} 
+                        onClick={() => {
+                          if (item.cartQuantity < item.quantity) {
+                            dispatch(updateQuantity({id: item.id, quantity: item.cartQuantity + 1}))
+                          } else {
+                            toast.error(`Only ${item.quantity} ${item.unit} in stock!`);
+                          }
+                        }} 
                         className="p-1 rounded bg-gray-100 dark:bg-dark-700 hover:bg-gray-200 dark:hover:bg-dark-600 text-gray-600 dark:text-gray-300 transition-colors"
                       >
                         <Plus size={16} />
@@ -135,7 +149,7 @@ const RetailerDashboard = () => {
                 <span className="text-primary-600">₹{total}</span>
               </div>
               <button 
-                onClick={handleCheckout} 
+                onClick={handleCheckoutClick} 
                 disabled={items.length === 0}
                 className="w-full py-4 bg-primary-600 text-white rounded-xl font-bold hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
@@ -183,6 +197,13 @@ const RetailerDashboard = () => {
           {orders.length === 0 && <div className="p-8 text-center text-gray-500 dark:text-gray-400">No order history.</div>}
         </div>
       )}
+
+      <PaymentModal 
+        isOpen={isPaymentModalOpen} 
+        onClose={() => setIsPaymentModalOpen(false)} 
+        totalAmount={total} 
+        onSuccess={handlePaymentSuccess} 
+      />
     </div>
   );
 };

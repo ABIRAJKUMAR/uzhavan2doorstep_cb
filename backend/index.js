@@ -9,7 +9,9 @@ import sequelize from './src/config/db.js';
 import authRoutes from './src/routes/authRoutes.js';
 import productRoutes from './src/routes/productRoutes.js';
 import orderRoutes from './src/routes/orderRoutes.js';
+import paymentRoutes from './src/routes/paymentRoutes.js';
 import marketPriceRoutes from './src/routes/marketPriceRoutes.js';
+import reviewRoutes from './src/routes/reviewRoutes.js';
 import { startMarketPriceCron, triggerManualFetch } from './src/jobs/marketPriceCron.js';
 
 dotenv.config();
@@ -31,7 +33,9 @@ app.use(morgan('dev'));
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/payment', paymentRoutes);
 app.use('/api/market-prices', marketPriceRoutes);
+app.use('/api/reviews', reviewRoutes);
 
 // Socket.io
 io.on('connection', (socket) => {

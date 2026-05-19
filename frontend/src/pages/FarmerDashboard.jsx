@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { Plus, Package, TrendingUp, Clock, CheckCircle, XCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const FarmerDashboard = () => {
   const { token, user } = useSelector(state => state.auth);
@@ -112,10 +113,33 @@ const FarmerDashboard = () => {
 
       {/* Overview Tab */}
       {activeTab === 'overview' && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <StatCard icon={<TrendingUp />} title="Total Earnings" value={`₹${totalEarnings}`} color="bg-green-100 text-green-600" />
-          <StatCard icon={<Package />} title="My Products" value={products.length} color="bg-blue-100 text-blue-600" />
-          <StatCard icon={<Clock />} title="Pending Orders" value={pendingOrders} color="bg-yellow-100 text-yellow-600" />
+        <div className="space-y-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <StatCard icon={<TrendingUp />} title="Total Earnings" value={`₹${totalEarnings}`} color="bg-green-100 text-green-600" />
+            <StatCard icon={<Package />} title="My Products" value={products.length} color="bg-blue-100 text-blue-600" />
+            <StatCard icon={<Clock />} title="Pending Orders" value={pendingOrders} color="bg-yellow-100 text-yellow-600" />
+          </div>
+          
+          <div className="glass-card p-6 border dark:border-dark-700">
+            <h3 className="text-xl font-bold mb-6 text-gray-900 dark:text-white">Sales Overview</h3>
+            <div className="h-80 w-full">
+              {orders.length > 0 ? (
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={orders.map((o, i) => ({ name: `Order ${i+1}`, amount: o.totalAmount })).slice(-10)}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#374151" opacity={0.2} />
+                    <XAxis dataKey="name" stroke="#6b7280" />
+                    <YAxis stroke="#6b7280" />
+                    <Tooltip contentStyle={{ backgroundColor: '#1f2937', borderColor: '#374151', color: '#fff', borderRadius: '8px' }} />
+                    <Line type="monotone" dataKey="amount" stroke="#10b981" strokeWidth={3} dot={{ r: 6, fill: '#10b981' }} activeDot={{ r: 8 }} />
+                  </LineChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="h-full flex items-center justify-center text-gray-500 dark:text-gray-400">
+                  Not enough data to display chart.
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       )}
 
@@ -208,12 +232,14 @@ const FarmerDashboard = () => {
                   <td className="p-4 text-sm dark:text-gray-300">{order.Product?.name} ({order.quantity})</td>
                   <td className="p-4 text-sm font-medium text-gray-900 dark:text-white">₹{order.totalAmount}</td>
                   <td className="p-4">
-                    <span className={`px-2 py-1 text-xs rounded-full font-medium
+                    <span className={`px-2 py-1 text-xs rounded-full font-medium inline-flex items-center gap-1
                       ${order.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' : ''}
                       ${order.status === 'Accepted' ? 'bg-blue-100 text-blue-800' : ''}
+                      ${order.status === 'Shipped' ? 'bg-purple-100 text-purple-800' : ''}
                       ${order.status === 'Delivered' ? 'bg-green-100 text-green-800' : ''}
                       ${order.status === 'Rejected' ? 'bg-red-100 text-red-800' : ''}
                     `}>
+                      {order.status === 'Delivered' ? <CheckCircle size={12}/> : <Package size={12}/>}
                       {order.status}
                     </span>
                   </td>
@@ -225,7 +251,10 @@ const FarmerDashboard = () => {
                       </div>
                     )}
                     {order.status === 'Accepted' && (
-                      <button onClick={() => updateOrderStatus(order.id, 'Delivered')} className="text-sm bg-blue-100 text-blue-700 px-3 py-1 rounded-md">Mark Delivered</button>
+                      <button onClick={() => updateOrderStatus(order.id, 'Shipped')} className="text-sm bg-purple-100 text-purple-700 hover:bg-purple-200 px-3 py-1 rounded-md transition-colors">Mark Shipped</button>
+                    )}
+                    {order.status === 'Shipped' && (
+                      <button onClick={() => updateOrderStatus(order.id, 'Delivered')} className="text-sm bg-blue-100 text-blue-700 hover:bg-blue-200 px-3 py-1 rounded-md transition-colors">Mark Delivered</button>
                     )}
                   </td>
                 </tr>

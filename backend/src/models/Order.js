@@ -38,6 +38,14 @@ const Order = sequelize.define('Order', {
   orderNumber: {
     type: DataTypes.STRING,
     unique: true,
+  },
+  paymentMethod: {
+    type: DataTypes.ENUM('Online', 'COD'),
+    defaultValue: 'Online',
+  },
+  paymentStatus: {
+    type: DataTypes.ENUM('Paid', 'Pending'),
+    defaultValue: 'Paid',
   }
 });
 

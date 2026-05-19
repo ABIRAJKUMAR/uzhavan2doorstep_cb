@@ -2,6 +2,7 @@ import User from './User.js';
 import Product from './Product.js';
 import Order from './Order.js';
 import MarketPrice from './MarketPrice.js';
+import Review from './Review.js';
 
 User.hasMany(Product, { foreignKey: 'farmerId' });
 Product.belongsTo(User, { foreignKey: 'farmerId', as: 'farmer' });
@@ -13,4 +14,10 @@ Order.belongsTo(User, { foreignKey: 'farmerId', as: 'farmer' });
 Order.belongsTo(User, { foreignKey: 'retailerId', as: 'retailer' });
 Order.belongsTo(Product, { foreignKey: 'productId' });
 
-export { User, Product, Order, MarketPrice };
+Product.hasMany(Review, { foreignKey: 'productId' });
+Review.belongsTo(Product, { foreignKey: 'productId' });
+
+User.hasMany(Review, { foreignKey: 'userId' });
+Review.belongsTo(User, { foreignKey: 'userId', as: 'reviewer' });
+
+export { User, Product, Order, MarketPrice, Review };
