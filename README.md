@@ -1,6 +1,8 @@
 # 🌾 UZHAVAN 2 DOORSTEP 🌾
 ### Connecting Farmers Directly to Retailers & Customers
 
+[![Developer Program Member](https://img.shields.io/badge/Developer%20Program-Member-3b82f6?style=flat-square&logo=github&logoColor=white)](https://github.com) [![GitHub PRO](https://img.shields.io/badge/GitHub-PRO-863bff?style=flat-square&logo=github&logoColor=white)](https://github.com)
+
 UZHAVAN 2 DOORSTEP is a premium, full-stack AgTech supply chain platform designed to eliminate middlemen, ensure fair pricing, and deliver fresh produce directly from farms to local shops and households. Powered by real-time Indian Government market data (Agmarknet), automated invoice generation, transactional notifications, and end-to-end QR code traceability.
 
 ---
