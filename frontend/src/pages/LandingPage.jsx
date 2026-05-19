@@ -44,7 +44,7 @@ const LandingPage = () => {
             </span>
             <h1 className="text-4xl md:text-6xl font-extrabold text-white tracking-tight mb-8">
               Connect Farmers Directly <br className="hidden md:block" />
-              <span className="text-primary-400">to Retailers</span>
+              <span className="text-primary-400">to Retailers &amp; Customers</span>
             </h1>
             <p className="mt-4 max-w-2xl text-xl text-gray-200 mx-auto mb-10">
               Eliminate middlemen, ensure fair prices, and deliver fresh produce directly from farms to local shops with AI-powered insights.
