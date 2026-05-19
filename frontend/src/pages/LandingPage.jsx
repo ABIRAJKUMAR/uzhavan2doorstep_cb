@@ -100,13 +100,13 @@ const LandingPage = () => {
       </section>
       
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+      <footer className="bg-gray-900 text-white py-8 border-t border-gray-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-4">
           <div className="flex items-center">
-            <Leaf className="h-8 w-8 text-primary-500" />
-            <span className="ml-2 font-bold text-xl">UZHAVAN 2 DOORSTEP</span>
+            <Leaf className="h-6 w-6 sm:h-8 sm:w-8 text-primary-500" />
+            <span className="ml-2 font-bold text-lg sm:text-xl">UZHAVAN 2 DOORSTEP</span>
           </div>
-          <p className="text-gray-400">&copy; 2026 UZHAVAN 2 DOORSTEP. All rights reserved.</p>
+          <p className="text-xs sm:text-sm text-gray-400 text-center sm:text-right">&copy; 2026 UZHAVAN 2 DOORSTEP. All rights reserved.</p>
         </div>
       </footer>
     </div>
