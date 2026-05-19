@@ -35,8 +35,8 @@ const Navbar = () => {
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <Link to="/" className="flex flex-shrink-0 items-center">
-              <Leaf className="h-8 w-8 text-primary-500" />
-              <span className="ml-2 font-bold text-xl tracking-tight text-gray-900 dark:text-white">
+              <Leaf className="h-7 w-7 sm:h-8 sm:w-8 text-primary-500" />
+              <span className="ml-1.5 sm:ml-2 font-extrabold text-[15px] sm:text-xl tracking-tight text-gray-900 dark:text-white whitespace-nowrap">
                 UZHAVAN 2 DOORSTEP
               </span>
             </Link>
