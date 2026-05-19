@@ -162,38 +162,69 @@ const RetailerDashboard = () => {
 
       {activeTab === 'orders' && (
         <div className="bg-white dark:bg-dark-800 rounded-2xl shadow-sm overflow-hidden">
-          <table className="w-full text-left">
-            <thead className="bg-gray-50 dark:bg-dark-700">
-              <tr>
-                <th className="p-4 font-medium text-gray-500 dark:text-gray-300">Order ID</th>
-                <th className="p-4 font-medium text-gray-500 dark:text-gray-300">Product</th>
-                <th className="p-4 font-medium text-gray-500 dark:text-gray-300">Quantity</th>
-                <th className="p-4 font-medium text-gray-500 dark:text-gray-300">Total</th>
-                <th className="p-4 font-medium text-gray-500 dark:text-gray-300">Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200 dark:divide-dark-700">
-              {orders.map(order => (
-                <tr key={order.id}>
-                  <td className="p-4 text-sm font-semibold text-primary-600 dark:text-primary-400">{order.orderNumber || order.id.substring(0,8)}</td>
-                  <td className="p-4 text-sm dark:text-gray-300">{order.Product?.name}</td>
-                  <td className="p-4 text-sm dark:text-gray-300">{order.quantity}</td>
-                  <td className="p-4 text-sm font-medium text-gray-900 dark:text-white">₹{order.totalAmount}</td>
-                  <td className="p-4">
-                    <span className={`px-2 py-1 text-xs rounded-full font-medium inline-flex items-center gap-1
-                      ${order.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' : ''}
-                      ${order.status === 'Accepted' ? 'bg-blue-100 text-blue-800' : ''}
-                      ${order.status === 'Delivered' ? 'bg-green-100 text-green-800' : ''}
-                      ${order.status === 'Rejected' ? 'bg-red-100 text-red-800' : ''}
-                    `}>
-                      {order.status === 'Delivered' ? <CheckCircle size={12}/> : <Truck size={12}/>}
-                      {order.status}
-                    </span>
-                  </td>
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
+            <table className="w-full text-left">
+              <thead className="bg-gray-50 dark:bg-dark-700">
+                <tr>
+                  <th className="p-4 font-medium text-gray-500 dark:text-gray-300">Order ID</th>
+                  <th className="p-4 font-medium text-gray-500 dark:text-gray-300">Product</th>
+                  <th className="p-4 font-medium text-gray-500 dark:text-gray-300">Quantity</th>
+                  <th className="p-4 font-medium text-gray-500 dark:text-gray-300">Total</th>
+                  <th className="p-4 font-medium text-gray-500 dark:text-gray-300">Status</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-gray-200 dark:divide-dark-700">
+                {orders.map(order => (
+                  <tr key={order.id} className="hover:bg-gray-50 dark:hover:bg-dark-700/50 transition-colors">
+                    <td className="p-4 text-sm font-semibold text-primary-600 dark:text-primary-400">{order.orderNumber || order.id.substring(0,8)}</td>
+                    <td className="p-4 text-sm dark:text-gray-300">{order.Product?.name}</td>
+                    <td className="p-4 text-sm dark:text-gray-300">{order.quantity}</td>
+                    <td className="p-4 text-sm font-medium text-gray-900 dark:text-white">₹{order.totalAmount}</td>
+                    <td className="p-4">
+                      <span className={`px-2.5 py-1 text-xs rounded-full font-semibold inline-flex items-center gap-1
+                        ${order.status === 'Pending' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' : ''}
+                        ${order.status === 'Accepted' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400' : ''}
+                        ${order.status === 'Shipped' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400' : ''}
+                        ${order.status === 'Delivered' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' : ''}
+                        ${order.status === 'Rejected' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400' : ''}
+                      `}>
+                        {order.status === 'Delivered' ? <CheckCircle size={12}/> : <Truck size={12}/>}
+                        {order.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="grid grid-cols-1 gap-4 p-4 md:hidden">
+            {orders.map(order => (
+              <div key={order.id} className="p-4 rounded-xl border border-gray-100 dark:border-dark-700 bg-gray-50 dark:bg-dark-900/50 flex flex-col gap-2">
+                <div className="flex justify-between items-center">
+                  <span className="text-xs font-semibold text-primary-600 dark:text-primary-400">#{order.orderNumber || order.id.substring(0,8)}</span>
+                  <span className={`px-2.5 py-1 text-xs rounded-full font-semibold inline-flex items-center gap-1
+                    ${order.status === 'Pending' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' : ''}
+                    ${order.status === 'Accepted' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400' : ''}
+                    ${order.status === 'Shipped' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400' : ''}
+                    ${order.status === 'Delivered' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' : ''}
+                    ${order.status === 'Rejected' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400' : ''}
+                  `}>
+                    {order.status === 'Delivered' ? <CheckCircle size={12}/> : <Truck size={12}/>}
+                    {order.status}
+                  </span>
+                </div>
+                <div className="font-bold text-gray-900 dark:text-white">{order.Product?.name}</div>
+                <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400 mt-1">
+                  <span>Qty: {order.quantity}</span>
+                  <span className="font-bold text-gray-900 dark:text-white">₹{order.totalAmount}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+
           {orders.length === 0 && <div className="p-8 text-center text-gray-500 dark:text-gray-400">No order history.</div>}
         </div>
       )}
