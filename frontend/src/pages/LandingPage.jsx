@@ -43,7 +43,7 @@ const LandingPage = () => {
               The Future of AgTech
             </span>
             <h1 className="text-4xl md:text-6xl font-extrabold text-white tracking-tight mb-8">
-              Connect Farmers Directly <br className="hidden md:block" />
+              Connecting Farmers Directly <br className="hidden md:block" />
               <span className="text-primary-400">to Retailers &amp; Customers</span>
             </h1>
             <p className="mt-4 max-w-2xl text-xl text-gray-200 mx-auto mb-10">
