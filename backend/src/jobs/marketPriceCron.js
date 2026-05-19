@@ -39,7 +39,7 @@ const fetchDailyMarketPrices = async () => {
     if (process.env.AGMARKNET_API_KEY) {
       console.log('Fetching live data from data.gov.in (Agmarknet)...');
       try {
-        const response = await axios.get(`https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070?api-key=${process.env.AGMARKNET_API_KEY}&format=json&filters[state]=Tamil%20Nadu`);
+        const response = await axios.get(`https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070?api-key=${process.env.AGMARKNET_API_KEY}&format=json&filters[state]=Tamil%20Nadu&limit=1000`);
         
         if (response.data && response.data.records && response.data.records.length > 0) {
           const liveData = response.data.records.map(record => ({
