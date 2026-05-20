@@ -17,3 +17,12 @@
 .glass-card {
   @apply bg-white/80 backdrop-blur-lg border border-gray-200/50 shadow-xl rounded-2xl dark:bg-dark-800/80 dark:border-dark-700/50;
 }
+
+@keyframes scan {
+  0%, 100% { top: 0%; }
+  50% { top: 100%; }
+}
+
+.animate-scan {
+  animation: scan 2s ease-in-out infinite;
+}
