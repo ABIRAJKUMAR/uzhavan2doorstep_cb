@@ -143,7 +143,7 @@ export const getTraceabilityInfo = async (req, res) => {
     const invoiceNumber = req.params.invoiceId;
     
     // Find all orders that share this invoice number
-    const orders = await Order.findAll({
+    let orders = await Order.findAll({
       where: { orderNumber: invoiceNumber },
       include: [
         { model: Product },
@@ -151,6 +151,20 @@ export const getTraceabilityInfo = async (req, res) => {
         { model: User, as: 'retailer', attributes: ['name', 'shopName'] }
       ]
     });
+
+    // Fallback: search by primary key order ID directly
+    if (!orders || orders.length === 0) {
+      const singleOrder = await Order.findByPk(invoiceNumber, {
+        include: [
+          { model: Product },
+          { model: User, as: 'farmer', attributes: ['name', 'village', 'district', 'phone'] },
+          { model: User, as: 'retailer', attributes: ['name', 'shopName'] }
+        ]
+      });
+      if (singleOrder) {
+        orders = [singleOrder];
+      }
+    }
 
     if (!orders || orders.length === 0) {
       return res.status(404).json({ message: 'Traceability data not found for this invoice.' });

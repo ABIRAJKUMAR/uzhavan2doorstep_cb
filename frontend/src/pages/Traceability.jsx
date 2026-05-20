@@ -61,6 +61,73 @@ const Traceability = () => {
   // Assuming all items in this invoice went to the same buyer
   const buyer = orders[0]?.retailer;
 
+  // Coordinates mapping for Tamil Nadu districts
+  const DISTRICT_COORDINATES = {
+    'dindigul': [10.3624, 77.9695],
+    'chennai': [13.0827, 80.2707],
+    'tiruchirappalli': [10.7905, 78.7047],
+    'trichy': [10.7905, 78.7047],
+    'madurai': [9.9252, 78.1198],
+    'coimbatore': [11.0168, 76.9558],
+    'salem': [11.6643, 78.1460],
+    'erode': [11.3410, 77.7172],
+    'thanjavur': [10.7870, 79.1378],
+    'vellore': [12.9165, 79.1325],
+    'tirunelveli': [8.7139, 77.7567],
+    'kanyakumari': [8.1883, 77.4107],
+    'dharmapuri': [12.1278, 78.1584],
+    'krishnagiri': [12.5266, 78.2149],
+    'cuddalore': [11.7480, 79.7714],
+    'villupuram': [11.9401, 79.4861],
+    'theni': [10.0104, 77.4748],
+    'virudhunagar': [9.5872, 77.9515],
+    'karur': [10.9601, 78.0766],
+    'namakkal': [11.2189, 78.1672],
+    'tiruppur': [11.1085, 77.3411],
+    'nilgiris': [11.4102, 76.6950],
+    'ooty': [11.4102, 76.6950],
+    'pudukkottai': [10.3797, 78.8202],
+    'ariyalur': [11.1401, 79.0783],
+    'perambalur': [11.2333, 78.8833],
+    'tiruvallur': [13.1394, 79.9070],
+    'kanchipuram': [12.8342, 79.7036],
+    'chengalpattu': [12.6934, 79.9774],
+    'ranipet': [12.9272, 79.3328],
+    'tirupattur': [12.4934, 78.5678],
+    'kallakurichi': [11.7370, 78.9620],
+    'nagapattinam': [10.7672, 79.8444],
+    'mayiladuthurai': [11.1018, 79.6517],
+    'tiruvarur': [10.7758, 79.6402],
+    'sivaganga': [9.8433, 78.4833],
+    'ramanathapuram': [9.3639, 78.8394],
+    'tenkasi': [8.9593, 77.3146],
+    'thoothukudi': [8.7642, 78.1348],
+    'tuticorin': [8.7642, 78.1348]
+  };
+
+  const getCoordinates = (locationString, defaultCoords) => {
+    if (!locationString) return defaultCoords;
+    const normalized = locationString.toLowerCase().trim();
+    for (const [district, coords] of Object.entries(DISTRICT_COORDINATES)) {
+      if (normalized.includes(district)) {
+        return coords;
+      }
+    }
+    return defaultCoords;
+  };
+
+  const order = orders[0];
+  const farmerLocStr = `${order?.farmer?.village || ''} ${order?.farmer?.district || ''}`;
+  const farmerCoords = getCoordinates(farmerLocStr || 'Dindigul', [10.3624, 77.9695]);
+  const deliveryLocStr = order?.deliveryAddress || 'Chennai';
+  const buyerCoords = getCoordinates(deliveryLocStr, [13.0827, 80.2707]);
+
+  // Center map dynamically at the midpoint of farmer and buyer
+  const mapCenter = [
+    (farmerCoords[0] + buyerCoords[0]) / 2,
+    (farmerCoords[1] + buyerCoords[1]) / 2
+  ];
+
   return (
     <div className="max-w-4xl mx-auto px-4 py-12">
       <div className="text-center mb-12">
@@ -164,16 +231,27 @@ const Traceability = () => {
             <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Live Route Map</h3>
           </div>
           <div className="h-[400px] w-full rounded-2xl overflow-hidden border border-gray-200 dark:border-dark-600 relative z-0">
-            {/* Simulating coordinates for the route */}
-            <MapContainer center={[11.1271, 78.6569]} zoom={7} style={{ height: '100%', width: '100%' }}>
+            <MapContainer center={mapCenter} zoom={7} style={{ height: '100%', width: '100%' }}>
               <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-              <Marker position={[10.3624, 77.9695]}>
-                <Popup>Farmer Location</Popup>
+              <Marker position={farmerCoords}>
+                <Popup>
+                  <div className="text-sm p-1">
+                    <p className="font-bold text-primary-600 mb-1">Farmer Location</p>
+                    <p className="font-medium text-gray-800 dark:text-gray-200">{order?.farmer?.name}</p>
+                    <p className="text-xs text-gray-500">{order?.farmer?.village}, {order?.farmer?.district}</p>
+                  </div>
+                </Popup>
               </Marker>
-              <Marker position={[13.0827, 80.2707]}>
-                <Popup>Delivery Location</Popup>
+              <Marker position={buyerCoords}>
+                <Popup>
+                  <div className="text-sm p-1">
+                    <p className="font-bold text-green-600 mb-1">Retailer Destination</p>
+                    <p className="font-medium text-gray-800 dark:text-gray-200">{buyer?.shopName || buyer?.name}</p>
+                    <p className="text-xs text-gray-500">{deliveryLocStr}</p>
+                  </div>
+                </Popup>
               </Marker>
-              <Polyline positions={[[10.3624, 77.9695], [13.0827, 80.2707]]} color="#10b981" weight={4} dashArray="10, 10" />
+              <Polyline positions={[farmerCoords, buyerCoords]} color="#10b981" weight={4} dashArray="10, 10" />
             </MapContainer>
           </div>
         </motion.div>

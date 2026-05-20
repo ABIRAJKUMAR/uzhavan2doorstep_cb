@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { clearCart, removeFromCart, updateQuantity } from '../redux/slices/cartSlice';
-import { ShoppingBag, Truck, CheckCircle, Trash2, Plus, Minus } from 'lucide-react';
+import { ShoppingBag, Truck, CheckCircle, Trash2, Plus, Minus, MapPin } from 'lucide-react';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 import PaymentModal from '../components/PaymentModal';
@@ -172,6 +173,7 @@ const RetailerDashboard = () => {
                   <th className="p-4 font-medium text-gray-500 dark:text-gray-300">Quantity</th>
                   <th className="p-4 font-medium text-gray-500 dark:text-gray-300">Total</th>
                   <th className="p-4 font-medium text-gray-500 dark:text-gray-300">Status</th>
+                  <th className="p-4 font-medium text-gray-500 dark:text-gray-300">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200 dark:divide-dark-700">
@@ -192,6 +194,15 @@ const RetailerDashboard = () => {
                         {order.status === 'Delivered' ? <CheckCircle size={12}/> : <Truck size={12}/>}
                         {order.status}
                       </span>
+                    </td>
+                    <td className="p-4">
+                      <Link 
+                        to={`/trace/${order.orderNumber || order.id}`} 
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400 hover:bg-primary-100 dark:hover:bg-primary-900/30 rounded-lg text-xs font-bold transition-colors"
+                      >
+                        <MapPin size={12} />
+                        Track Map
+                      </Link>
                     </td>
                   </tr>
                 ))}
@@ -220,6 +231,15 @@ const RetailerDashboard = () => {
                 <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400 mt-1">
                   <span>Qty: {order.quantity}</span>
                   <span className="font-bold text-gray-900 dark:text-white">₹{order.totalAmount}</span>
+                </div>
+                <div className="flex justify-end mt-2 pt-2 border-t border-gray-100 dark:border-dark-700">
+                  <Link 
+                    to={`/trace/${order.orderNumber || order.id}`} 
+                    className="inline-flex items-center gap-1 px-3 py-1 bg-primary-600 text-white hover:bg-primary-700 rounded-lg text-xs font-bold transition-colors"
+                  >
+                    <MapPin size={12} />
+                    Track Map
+                  </Link>
                 </div>
               </div>
             ))}
