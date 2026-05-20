@@ -28,6 +28,7 @@ const FarmerDashboard = () => {
   const [scanPreview, setScanPreview] = useState(null);
   const [isScanning, setIsScanning] = useState(false);
   const [scanResult, setScanResult] = useState(null);
+  const [selectedCrop, setSelectedCrop] = useState('Tomato');
 
   useEffect(() => {
     fetchData();
@@ -172,8 +173,8 @@ const FarmerDashboard = () => {
     setIsScanning(true);
     setTimeout(() => {
       setIsScanning(false);
-      // Simulate leaf diagnostic analysis
-      const diseases = [
+      
+      const tomatoDiseases = [
         {
           crop: 'Tomato (தக்காளி)',
           issue: 'Tomato Early Blight (தக்காளி கருகல் நோய்)',
@@ -186,6 +187,30 @@ const FarmerDashboard = () => {
           ]
         },
         {
+          crop: 'Tomato (தக்காளி)',
+          issue: 'Tomato Leaf Mold (தக்காளி இலை பூஞ்சை நோய்)',
+          status: 'warning',
+          confidence: '91.2%',
+          remedies: [
+            'Improve air circulation around tomato plants.',
+            'Apply certified copper fungicide early in the morning.',
+            'Reduce humidity levels in greenhouses or polytunnels.'
+          ]
+        },
+        {
+          crop: 'Tomato (தக்காளி)',
+          issue: 'Healthy Tomato Plant (ஆரோக்கியமான தக்காளி பயிர்)',
+          status: 'success',
+          confidence: '99.1%',
+          remedies: [
+            'Your tomato plant looks perfectly healthy! Keep doing what you are doing.',
+            'Maintain optimal soil moisture and balanced fertilizing.'
+          ]
+        }
+      ];
+
+      const riceDiseases = [
+        {
           crop: 'Rice (நெல்)',
           issue: 'Rice Leaf Blast (நெல் இலை கருகல் நோய்)',
           status: 'danger',
@@ -196,6 +221,30 @@ const FarmerDashboard = () => {
             'Drain excess standing water from the field for 24-48 hours.'
           ]
         },
+        {
+          crop: 'Rice (நெல்)',
+          issue: 'Rice Brown Spot (நெல் இலைப்புள்ளி நோய்)',
+          status: 'warning',
+          confidence: '88.5%',
+          remedies: [
+            'Ensure proper soil nutrient management (especially Potassium).',
+            'Apply organic compost once every two weeks.',
+            'Spray copper oxychloride to control fungal expansion.'
+          ]
+        },
+        {
+          crop: 'Rice (நெல்)',
+          issue: 'Healthy Rice Plant (ஆரோக்கியமான நெல் பயிர்)',
+          status: 'success',
+          confidence: '98.5%',
+          remedies: [
+            'Your rice crop looks completely healthy! Excellent maintenance.',
+            'Keep checking water level at regular intervals.'
+          ]
+        }
+      ];
+
+      const cottonDiseases = [
         {
           crop: 'Cotton (பருத்தி)',
           issue: 'Leaf Curl Virus (இலை சுருள் நோய்)',
@@ -208,18 +257,105 @@ const FarmerDashboard = () => {
           ]
         },
         {
-          crop: 'Healthy Leaf (ஆரோக்கியமான இலை)',
-          issue: 'No Disease Detected (ஆரோக்கியமான பயிர்)',
-          status: 'success',
-          confidence: '98.9%',
+          crop: 'Cotton (பருத்தி)',
+          issue: 'Boll Rot (பருத்தி காய் அழுகல் நோய்)',
+          status: 'danger',
+          confidence: '93.3%',
           remedies: [
-            'Your crop looks perfectly healthy! Keep doing what you are doing.',
-            'Maintain optimal irrigation cycles.',
-            'Apply organic compost once every two weeks.'
+            'Ensure adequate plant spacing for aeration.',
+            'Avoid excessive nitrogen applications.',
+            'Spray systemic fungicide if symptoms persist.'
+          ]
+        },
+        {
+          crop: 'Cotton (பருத்தி)',
+          issue: 'Healthy Cotton Plant (ஆரோக்கியமான பருத்தி பயிர்)',
+          status: 'success',
+          confidence: '97.8%',
+          remedies: [
+            'Your cotton plant is healthy and showing great growth patterns.',
+            'Continue regular insect scouting.'
           ]
         }
       ];
-      const randomResult = diseases[Math.floor(Math.random() * diseases.length)];
+
+      const chilliDiseases = [
+        {
+          crop: 'Chilli (மிளகாய்)',
+          issue: 'Chilli Anthracnose (மிளகாய் அழுகல் நோய்)',
+          status: 'danger',
+          confidence: '94.2%',
+          remedies: [
+            'Remove infected fruits and destroy them.',
+            'Spray Trichoderma viride formulation (டிரைக்கோடெர்மா விரிடி தெளிக்கவும்).',
+            'Avoid using seeds from infected plants for next cultivation.'
+          ]
+        },
+        {
+          crop: 'Chilli (மிளகாய்)',
+          issue: 'Chilli Leaf Curl (மிளகாய் இலை சுருள் நோய்)',
+          status: 'warning',
+          confidence: '91.5%',
+          remedies: [
+            'Control sucking pests (thrips/mites) using sticky traps.',
+            'Spray dilute garlic-chilli extract as a natural repellent.',
+            'Keep fields weed-free to reduce pest breeding grounds.'
+          ]
+        },
+        {
+          crop: 'Chilli (மிளகாய்)',
+          issue: 'Healthy Chilli Plant (ஆரோக்கியமான மிளகாய் பயிர்)',
+          status: 'success',
+          confidence: '99.3%',
+          remedies: [
+            'Your chilli plants look exceptionally healthy! No disease detected.',
+            'Maintain regular irrigation and weeding cycles.'
+          ]
+        }
+      ];
+
+      const otherDiseases = [
+        {
+          crop: 'General Leaf (இதர பயிர்)',
+          issue: 'Powdery Mildew (சாம்பல் நோய்)',
+          status: 'warning',
+          confidence: '86.4%',
+          remedies: [
+            'Expose plants to full sun where possible.',
+            'Spray baking soda solution mixed with mild soap.',
+            'Remove infected leaves immediately to contain spread.'
+          ]
+        },
+        {
+          crop: 'General Leaf (இதர பயிர்)',
+          issue: 'Leaf Spot Disease (இலைப்புள்ளி நோய்)',
+          status: 'danger',
+          confidence: '89.9%',
+          remedies: [
+            'Spray neem oil extract to inhibit fungal spore development.',
+            'Avoid watering from overhead; keep foliage dry.',
+            'Ensure adequate ventilation between rows.'
+          ]
+        },
+        {
+          crop: 'General Leaf (இதர பயிர்)',
+          issue: 'Healthy Crop (ஆரோக்கியமான பயிர்)',
+          status: 'success',
+          confidence: '98.2%',
+          remedies: [
+            'The uploaded leaf appears healthy and free of pathogenic infections.',
+            'Keep monitoring and apply standard organic manure.'
+          ]
+        }
+      ];
+
+      let chosenResultList = otherDiseases;
+      if (selectedCrop === 'Tomato') chosenResultList = tomatoDiseases;
+      else if (selectedCrop === 'Rice') chosenResultList = riceDiseases;
+      else if (selectedCrop === 'Cotton') chosenResultList = cottonDiseases;
+      else if (selectedCrop === 'Chilli') chosenResultList = chilliDiseases;
+
+      const randomResult = chosenResultList[Math.floor(Math.random() * chosenResultList.length)];
       setScanResult(randomResult);
     }, 2500);
   };
@@ -568,6 +704,25 @@ const FarmerDashboard = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Left Side: Upload & Scan */}
             <div className="flex flex-col justify-center">
+              <div className="mb-6">
+                <label className="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">
+                  Select Crop Type (பயிர் வகையைத் தேர்ந்தெடுக்கவும்)
+                </label>
+                <select
+                  value={selectedCrop}
+                  onChange={(e) => {
+                    setSelectedCrop(e.target.value);
+                    setScanResult(null);
+                  }}
+                  className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-dark-600 dark:bg-dark-800 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all text-sm font-medium"
+                >
+                  <option value="Tomato">Tomato (தக்காளி)</option>
+                  <option value="Rice">Rice (நெல்)</option>
+                  <option value="Cotton">Cotton (பருத்தி)</option>
+                  <option value="Chilli">Chilli (மிளகாய்)</option>
+                  <option value="Other">Other / General Leaf (இதர பயிர்கள்)</option>
+                </select>
+              </div>
               {!scanPreview ? (
                 <div 
                   onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
