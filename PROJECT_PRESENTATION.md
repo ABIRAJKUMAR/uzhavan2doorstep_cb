@@ -73,16 +73,17 @@ This document outlines the slide-by-slide content, speaker assignments, and spea
 
 ---
 
-### **Slide 4: Key Platform Features (UI/UX Design)**
+### **Slide 4: Key Platform Features (UI/UX Design & AI Tools)**
 * **Presenter:** **Member 2**
-* **Slide Title:** Core Capabilities & UX Design
-* **Visuals:** A 4-quadrant feature grid displaying: Price Feed, QR Scanner, Invoice PDF, and Dark Mode toggles.
+* **Slide Title:** Core Capabilities & Interactive UX Design
+* **Visuals:** A beautiful grid displaying: AI Crop Disease Scanner UI, Interactive Route Tracking Map, Live Agmarknet Price Feed, and Drag & Drop file uploader.
 * **Key Bullet Points:**
-  * **Tamil Nadu Agmarknet Sync:** Crawls and processes 1000+ daily agricultural records.
-  * **Unified Role-Based Portals:** Secure dashboards tailored for Farmers (crop inventory) and Retailers (shopping cart and order logs).
-  * **Modern Premium Interface:** Beautiful glassmorphic design system using Tailwind CSS with responsive layout and dark/light modes.
+  * **AI Crop Disease Scanner (Beta):** Computer-vision simulator analyzing leaf images to detect crop blight/blast with bilingual organic remedies (Tamil/English).
+  * **Live Route Map Tracking:** Dynamic OpenStreetMap tracking overlay rendering logistics routes from the farmer's village to the retailer's shop in Tamil Nadu.
+  * **Unified Role-Based Portals:** Custom portals for Farmers (drag-and-drop crop uploader) and Retailers (interactive shopping cart).
+  * **Modern Premium Interface:** Sleek glassmorphic components using Tailwind CSS, supporting dark/light mode toggling.
 * **Speaking Notes:**
-  > "We prioritized a premium user experience. The app features role-based portals: farmers manage their stock, while retailers browse, add items to their carts, and checkout. The interface uses a clean, modern glassmorphic design system with a fully responsive layout and high-contrast dark mode to cater to farmers working in various outdoor lighting conditions."
+  > "We prioritized visual excellence and interactivity. Along with role-based dashboards, the platform includes a live interactive Route Map Tracking system between farmers and retailers using OpenStreetMap coordinates. Additionally, we integrated a beta AI Crop Disease Scanner. Farmers can drag-and-drop leaf photos to run a simulated computer-vision analysis, yielding diagnostic reports and organic remedies in both Tamil and English."
 
 ---
 

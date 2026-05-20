@@ -65,11 +65,11 @@ By default, Gamma uses a **"Fluid"** card size that changes depending on how muc
 
 ---
 
-# Slide 4: Key Platform Features
-## Core Capabilities & User Experience
-* **Automated Sync:** Processes daily commodity records for Tamil Nadu.
-* **Role-Based Portals:** Custom portals for Farmers (Stock) and Retailers (Carts).
-* **Modern Design:** Glassmorphic layout with Light/Dark theme toggle.
+# Slide 4: Key Platform Features & AI Tools
+## Core Capabilities & Interactive UX Design
+* **AI Crop Disease Scanner (Beta):** Simulated leaf scan diagnostics with organic remedies in Tamil & English.
+* **Live Route Map Tracking:** Dynamic coordinate overlay routing farmer location to retailer location.
+* **Modern Design:** Glassmorphic layout with drag-and-drop crop uploader.
 
 ---
 
@@ -109,9 +109,9 @@ By default, Gamma uses a **"Fluid"** card size that changes depending on how muc
 
 # Slide 9: Futuristic Roadmap
 ## The Road Ahead
-* **AI Price Forecasting:** ML models to predict next week's crop prices.
-* **Vernacular Interface:** Native language support (Tamil) with voice search.
-* **IoT Cold-Chain:** Real-time sensor integration to monitor temperature.
+* **AI Price Forecasting:** ML prediction models to suggest next week's crop price.
+* **IoT Cold-Chain:** Real-time temperature sensor integration for shipping logistics.
+* **AI Diagnostic Scaling:** Extending leaf diagnostics to detect 50+ regional crop varieties.
 
 ---
 
