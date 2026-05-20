@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { Plus, Package, TrendingUp, Clock, CheckCircle, XCircle, UploadCloud, Trash2, X, Cpu, Sparkles, RefreshCw } from 'lucide-react';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
 const FarmerDashboard = () => {
   const { token, user } = useSelector(state => state.auth);
@@ -29,6 +29,7 @@ const FarmerDashboard = () => {
   const [isScanning, setIsScanning] = useState(false);
   const [scanResult, setScanResult] = useState(null);
   const [selectedCrop, setSelectedCrop] = useState('Tomato');
+  const [chartMode, setChartMode] = useState('earnings');
 
   useEffect(() => {
     fetchData();
@@ -368,6 +369,31 @@ const FarmerDashboard = () => {
     setIsScanning(false);
   };
 
+  const getEarningsByDate = () => {
+    const groups = {};
+    orders.forEach(order => {
+      if (!order.createdAt) return;
+      const dateStr = new Date(order.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      groups[dateStr] = (groups[dateStr] || 0) + order.totalAmount;
+    });
+    return Object.keys(groups).map(date => ({
+      name: date,
+      amount: groups[date]
+    })).slice(-7);
+  };
+
+  const getSalesByCrop = () => {
+    const groups = {};
+    orders.forEach(order => {
+      const cropName = order.Product?.name || 'Unknown';
+      groups[cropName] = (groups[cropName] || 0) + order.totalAmount;
+    });
+    return Object.keys(groups).map(crop => ({
+      name: crop,
+      amount: groups[crop]
+    }));
+  };
+
   const totalEarnings = orders.filter(o => o.status === 'Delivered').reduce((acc, o) => acc + o.totalAmount, 0);
   const pendingOrders = orders.filter(o => o.status === 'Pending').length;
 
@@ -402,21 +428,63 @@ const FarmerDashboard = () => {
           </div>
           
           <div className="glass-card p-6 border dark:border-dark-700">
-            <h3 className="text-xl font-bold mb-6 text-gray-900 dark:text-white">Sales Overview</h3>
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+              <div>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white">Sales & Analytics (விற்பனை பகுப்பாய்வு)</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Understand your farm's performance and crop popularity.</p>
+              </div>
+              <div className="flex bg-gray-100 dark:bg-dark-900 p-1 rounded-xl border dark:border-dark-750">
+                <button
+                  onClick={() => setChartMode('earnings')}
+                  className={`px-4 py-2 text-xs font-bold rounded-lg transition-all ${chartMode === 'earnings' ? 'bg-primary-600 text-white shadow' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'}`}
+                >
+                  Earnings Trend (வருவாய்)
+                </button>
+                <button
+                  onClick={() => setChartMode('crops')}
+                  className={`px-4 py-2 text-xs font-bold rounded-lg transition-all ${chartMode === 'crops' ? 'bg-primary-600 text-white shadow' : 'text-gray-650 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'}`}
+                >
+                  Popular Crops (பயிர்கள்)
+                </button>
+              </div>
+            </div>
+
             <div className="h-80 w-full">
               {orders.length > 0 ? (
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={orders.map((o, i) => ({ name: `Order ${i+1}`, amount: o.totalAmount })).slice(-10)}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#374151" opacity={0.2} />
-                    <XAxis dataKey="name" stroke="#6b7280" />
-                    <YAxis stroke="#6b7280" />
-                    <Tooltip contentStyle={{ backgroundColor: '#1f2937', borderColor: '#374151', color: '#fff', borderRadius: '8px' }} />
-                    <Line type="monotone" dataKey="amount" stroke="#10b981" strokeWidth={3} dot={{ r: 6, fill: '#10b981' }} activeDot={{ r: 8 }} />
-                  </LineChart>
+                  {chartMode === 'earnings' ? (
+                    <AreaChart data={getEarningsByDate()}>
+                      <defs>
+                        <linearGradient id="colorEarnings" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#10b981" stopOpacity={0.4}/>
+                          <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#374151" opacity={0.15} />
+                      <XAxis dataKey="name" stroke="#6b7280" tick={{ fontSize: 12 }} />
+                      <YAxis stroke="#6b7280" tick={{ fontSize: 12 }} unit="₹" />
+                      <Tooltip 
+                        contentStyle={{ backgroundColor: '#1f2937', borderColor: '#374151', color: '#fff', borderRadius: '12px', fontSize: '13px' }} 
+                        formatter={(value) => [`₹${value}`, 'Earnings']}
+                      />
+                      <Area type="monotone" dataKey="amount" stroke="#10b981" strokeWidth={3} fillOpacity={1} fill="url(#colorEarnings)" />
+                    </AreaChart>
+                  ) : (
+                    <BarChart data={getSalesByCrop()}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#374151" opacity={0.15} />
+                      <XAxis dataKey="name" stroke="#6b7280" tick={{ fontSize: 12 }} />
+                      <YAxis stroke="#6b7280" tick={{ fontSize: 12 }} unit="₹" />
+                      <Tooltip 
+                        contentStyle={{ backgroundColor: '#1f2937', borderColor: '#374151', color: '#fff', borderRadius: '12px', fontSize: '13px' }} 
+                        formatter={(value) => [`₹${value}`, 'Sales']}
+                      />
+                      <Bar dataKey="amount" fill="#059669" radius={[8, 8, 0, 0]} maxBarSize={50} />
+                    </BarChart>
+                  )}
                 </ResponsiveContainer>
               ) : (
                 <div className="h-full flex items-center justify-center text-gray-500 dark:text-gray-400">
-                  Not enough data to display chart.
+                  Not enough sales data to render analytics.
                 </div>
               )}
             </div>
