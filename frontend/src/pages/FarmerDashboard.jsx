@@ -177,19 +177,19 @@ const FarmerDashboard = () => {
       
       const tomatoDiseases = [
         {
-          crop: 'Tomato (தக்காளி)',
-          issue: 'Tomato Early Blight (தக்காளி கருகல் நோய்)',
+          crop: 'Tomato',
+          issue: 'Tomato Early Blight',
           status: 'danger',
           confidence: '95.4%',
           remedies: [
             'Remove infected lower leaves to prevent spread.',
-            'Spray organic neem oil solution (வேப்ப எண்ணெய் கரைசல் தெளிக்கவும்).',
+            'Spray organic neem oil solution.',
             'Avoid overhead watering; irrigate at the base of the crop.'
           ]
         },
         {
-          crop: 'Tomato (தக்காளி)',
-          issue: 'Tomato Leaf Mold (தக்காளி இலை பூஞ்சை நோய்)',
+          crop: 'Tomato',
+          issue: 'Tomato Leaf Mold',
           status: 'warning',
           confidence: '91.2%',
           remedies: [
@@ -199,8 +199,8 @@ const FarmerDashboard = () => {
           ]
         },
         {
-          crop: 'Tomato (தக்காளி)',
-          issue: 'Healthy Tomato Plant (ஆரோக்கியமான தக்காளி பயிர்)',
+          crop: 'Tomato',
+          issue: 'Healthy Tomato Plant',
           status: 'success',
           confidence: '99.1%',
           remedies: [
@@ -212,19 +212,19 @@ const FarmerDashboard = () => {
 
       const riceDiseases = [
         {
-          crop: 'Rice (நெல்)',
-          issue: 'Rice Leaf Blast (நெல் இலை கருகல் நோய்)',
+          crop: 'Rice',
+          issue: 'Rice Leaf Blast',
           status: 'danger',
           confidence: '92.1%',
           remedies: [
             'Apply balanced nitrogen fertilizers to prevent excessive vegetative growth.',
-            'Spray Pseudomonas fluorescens formulation (சூடோமோனாஸ் தெளிக்கவும்).',
+            'Spray Pseudomonas fluorescens formulation.',
             'Drain excess standing water from the field for 24-48 hours.'
           ]
         },
         {
-          crop: 'Rice (நெல்)',
-          issue: 'Rice Brown Spot (நெல் இலைப்புள்ளி நோய்)',
+          crop: 'Rice',
+          issue: 'Rice Brown Spot',
           status: 'warning',
           confidence: '88.5%',
           remedies: [
@@ -234,8 +234,8 @@ const FarmerDashboard = () => {
           ]
         },
         {
-          crop: 'Rice (நெல்)',
-          issue: 'Healthy Rice Plant (ஆரோக்கியமான நெல் பயிர்)',
+          crop: 'Rice',
+          issue: 'Healthy Rice Plant',
           status: 'success',
           confidence: '98.5%',
           remedies: [
@@ -247,8 +247,8 @@ const FarmerDashboard = () => {
 
       const cottonDiseases = [
         {
-          crop: 'Cotton (பருத்தி)',
-          issue: 'Leaf Curl Virus (இலை சுருள் நோய்)',
+          crop: 'Cotton',
+          issue: 'Leaf Curl Virus',
           status: 'warning',
           confidence: '89.7%',
           remedies: [
@@ -258,8 +258,8 @@ const FarmerDashboard = () => {
           ]
         },
         {
-          crop: 'Cotton (பருத்தி)',
-          issue: 'Boll Rot (பருத்தி காய் அழுகல் நோய்)',
+          crop: 'Cotton',
+          issue: 'Boll Rot',
           status: 'danger',
           confidence: '93.3%',
           remedies: [
@@ -269,8 +269,8 @@ const FarmerDashboard = () => {
           ]
         },
         {
-          crop: 'Cotton (பருத்தி)',
-          issue: 'Healthy Cotton Plant (ஆரோக்கியமான பருத்தி பயிர்)',
+          crop: 'Cotton',
+          issue: 'Healthy Cotton Plant',
           status: 'success',
           confidence: '97.8%',
           remedies: [
@@ -282,19 +282,19 @@ const FarmerDashboard = () => {
 
       const chilliDiseases = [
         {
-          crop: 'Chilli (மிளகாய்)',
-          issue: 'Chilli Anthracnose (மிளகாய் அழுகல் நோய்)',
+          crop: 'Chilli',
+          issue: 'Chilli Anthracnose',
           status: 'danger',
           confidence: '94.2%',
           remedies: [
             'Remove infected fruits and destroy them.',
-            'Spray Trichoderma viride formulation (டிரைக்கோடெர்மா விரிடி தெளிக்கவும்).',
+            'Spray Trichoderma viride formulation.',
             'Avoid using seeds from infected plants for next cultivation.'
           ]
         },
         {
-          crop: 'Chilli (மிளகாய்)',
-          issue: 'Chilli Leaf Curl (மிளகாய் இலை சுருள் நோய்)',
+          crop: 'Chilli',
+          issue: 'Chilli Leaf Curl',
           status: 'warning',
           confidence: '91.5%',
           remedies: [
@@ -304,8 +304,8 @@ const FarmerDashboard = () => {
           ]
         },
         {
-          crop: 'Chilli (மிளகாய்)',
-          issue: 'Healthy Chilli Plant (ஆரோக்கியமான மிளகாய் பயிர்)',
+          crop: 'Chilli',
+          issue: 'Healthy Chilli Plant',
           status: 'success',
           confidence: '99.3%',
           remedies: [
@@ -317,8 +317,8 @@ const FarmerDashboard = () => {
 
       const otherDiseases = [
         {
-          crop: 'General Leaf (இதர பயிர்)',
-          issue: 'Powdery Mildew (சாம்பல் நோய்)',
+          crop: 'General Leaf',
+          issue: 'Powdery Mildew',
           status: 'warning',
           confidence: '86.4%',
           remedies: [
@@ -328,8 +328,8 @@ const FarmerDashboard = () => {
           ]
         },
         {
-          crop: 'General Leaf (இதர பயிர்)',
-          issue: 'Leaf Spot Disease (இலைப்புள்ளி நோய்)',
+          crop: 'General Leaf',
+          issue: 'Leaf Spot Disease',
           status: 'danger',
           confidence: '89.9%',
           remedies: [
@@ -339,8 +339,8 @@ const FarmerDashboard = () => {
           ]
         },
         {
-          crop: 'General Leaf (இதர பயிர்)',
-          issue: 'Healthy Crop (ஆரோக்கியமான பயிர்)',
+          crop: 'General Leaf',
+          issue: 'Healthy Crop',
           status: 'success',
           confidence: '98.2%',
           remedies: [
@@ -430,7 +430,7 @@ const FarmerDashboard = () => {
           <div className="glass-card p-6 border dark:border-dark-700">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
               <div>
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white">Sales & Analytics (விற்பனை பகுப்பாய்வு)</h3>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white">Sales & Analytics</h3>
                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Understand your farm's performance and crop popularity.</p>
               </div>
               <div className="flex bg-gray-100 dark:bg-dark-900 p-1 rounded-xl border dark:border-dark-750">
@@ -438,13 +438,13 @@ const FarmerDashboard = () => {
                   onClick={() => setChartMode('earnings')}
                   className={`px-4 py-2 text-xs font-bold rounded-lg transition-all ${chartMode === 'earnings' ? 'bg-primary-600 text-white shadow' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'}`}
                 >
-                  Earnings Trend (வருவாய்)
+                  Earnings Trend
                 </button>
                 <button
                   onClick={() => setChartMode('crops')}
                   className={`px-4 py-2 text-xs font-bold rounded-lg transition-all ${chartMode === 'crops' ? 'bg-primary-600 text-white shadow' : 'text-gray-650 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'}`}
                 >
-                  Popular Crops (பயிர்கள்)
+                  Popular Crops
                 </button>
               </div>
             </div>
@@ -774,7 +774,7 @@ const FarmerDashboard = () => {
             <div className="flex flex-col justify-center">
               <div className="mb-6">
                 <label className="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">
-                  Select Crop Type (பயிர் வகையைத் தேர்ந்தெடுக்கவும்)
+                  Select Crop Type
                 </label>
                 <select
                   value={selectedCrop}
@@ -784,11 +784,11 @@ const FarmerDashboard = () => {
                   }}
                   className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-dark-600 dark:bg-dark-800 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all text-sm font-medium"
                 >
-                  <option value="Tomato">Tomato (தக்காளி)</option>
-                  <option value="Rice">Rice (நெல்)</option>
-                  <option value="Cotton">Cotton (பருத்தி)</option>
-                  <option value="Chilli">Chilli (மிளகாய்)</option>
-                  <option value="Other">Other / General Leaf (இதர பயிர்கள்)</option>
+                  <option value="Tomato">Tomato</option>
+                  <option value="Rice">Rice</option>
+                  <option value="Cotton">Cotton</option>
+                  <option value="Chilli">Chilli</option>
+                  <option value="Other">Other / General Leaf</option>
                 </select>
               </div>
               {!scanPreview ? (
@@ -834,7 +834,7 @@ const FarmerDashboard = () => {
                   className="w-full py-4 mt-6 bg-primary-600 hover:bg-primary-700 text-white font-bold rounded-xl shadow-lg shadow-primary-600/35 transition-all text-lg flex items-center justify-center gap-2"
                 >
                   <Sparkles size={20} />
-                  Analyze Crop Health (பகுப்பாய்வு செய்)
+                  Analyze Crop Health
                 </button>
               )}
             </div>
@@ -896,7 +896,7 @@ const FarmerDashboard = () => {
                   <div className="border-t dark:border-dark-700 pt-4">
                     <h4 className="font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
                       <Sparkles size={16} className="text-primary-500" />
-                      Recommended Solutions (பரிந்துரைகள்)
+                      Recommended Solutions
                     </h4>
                     <ul className="space-y-2">
                       {scanResult.remedies.map((remedy, i) => (
