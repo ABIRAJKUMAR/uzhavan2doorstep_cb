@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
-import { Plus, Package, TrendingUp, Clock, CheckCircle, XCircle } from 'lucide-react';
+import { Plus, Package, TrendingUp, Clock, CheckCircle, XCircle, UploadCloud, Trash2, X } from 'lucide-react';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
@@ -14,9 +14,14 @@ const FarmerDashboard = () => {
   
   // New Product Form State
   const [newProduct, setNewProduct] = useState({
-    name: '', category: 'Vegetables', quantity: '', unit: 'kg', price: '', description: '', isOrganic: false, images: null
+    name: '', category: 'Vegetables', quantity: '', unit: 'kg', price: '', description: '', isOrganic: false
   });
   const [marketRates, setMarketRates] = useState([]);
+
+  // Drag and Drop Upload States
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [previews, setPreviews] = useState([]);
+  const [dragActive, setDragActive] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -41,6 +46,52 @@ const FarmerDashboard = () => {
     }
   };
 
+  // Drag and Drop File Handlers
+  const handleFiles = (files) => {
+    const filesArray = Array.from(files).filter(file => file.type.startsWith('image/'));
+    const newFiles = [...selectedFiles, ...filesArray].slice(0, 5);
+    setSelectedFiles(newFiles);
+    
+    // Revoke old previews to avoid memory leak
+    previews.forEach(p => URL.revokeObjectURL(p));
+    const newPreviews = newFiles.map(file => URL.createObjectURL(file));
+    setPreviews(newPreviews);
+  };
+
+  const handleDrag = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
+    }
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleFiles(e.dataTransfer.files);
+    }
+  };
+
+  const handleChange = (e) => {
+    e.preventDefault();
+    if (e.target.files && e.target.files[0]) {
+      handleFiles(e.target.files);
+    }
+  };
+
+  const removeFile = (index) => {
+    const newFiles = selectedFiles.filter((_, i) => i !== index);
+    setSelectedFiles(newFiles);
+    URL.revokeObjectURL(previews[index]);
+    const newPreviews = previews.filter((_, i) => i !== index);
+    setPreviews(newPreviews);
+  };
+
   const handleAddProduct = async (e) => {
     e.preventDefault();
     try {
@@ -58,8 +109,8 @@ const FarmerDashboard = () => {
       formData.append('description', newProduct.description);
       formData.append('isOrganic', newProduct.isOrganic);
       
-      if (newProduct.images) {
-        Array.from(newProduct.images).forEach(file => {
+      if (selectedFiles.length > 0) {
+        selectedFiles.forEach(file => {
           formData.append('images', file);
         });
       }
@@ -68,7 +119,10 @@ const FarmerDashboard = () => {
       await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/products`, formData, { headers });
       toast.success('Product added successfully!', { id: uploadToast });
       
-      setNewProduct({ name: '', category: 'Vegetables', quantity: '', unit: 'kg', price: '', description: '', isOrganic: false, images: null });
+      setNewProduct({ name: '', category: 'Vegetables', quantity: '', unit: 'kg', price: '', description: '', isOrganic: false });
+      setSelectedFiles([]);
+      previews.forEach(p => URL.revokeObjectURL(p));
+      setPreviews([]);
       fetchData();
     } catch (err) {
       console.error(err);
@@ -191,15 +245,52 @@ const FarmerDashboard = () => {
               <textarea value={newProduct.description} onChange={e => setNewProduct({...newProduct, description: e.target.value})} className="w-full p-3 rounded-lg border dark:bg-dark-800 dark:border-dark-600 dark:text-white" rows="3"></textarea>
             </div>
             <div>
-              <label className="block text-sm mb-1 dark:text-gray-300">Product Images</label>
-              <input 
-                type="file" 
-                multiple 
-                accept="image/*"
-                onChange={e => setNewProduct({...newProduct, images: e.target.files})} 
-                className="w-full p-3 rounded-lg border border-dashed dark:bg-dark-800 dark:border-dark-600 dark:text-white" 
-              />
-              <p className="text-xs text-gray-500 mt-1">You can select multiple images (Max 5)</p>
+              <label className="block text-sm mb-1 dark:text-gray-300 font-medium font-sans">Product Images</label>
+              <div 
+                onDragEnter={handleDrag}
+                onDragOver={handleDrag}
+                onDragLeave={handleDrag}
+                onDrop={handleDrop}
+                onClick={() => document.getElementById('image-upload-input').click()}
+                className={`relative group w-full py-8 px-4 rounded-2xl border-2 border-dashed flex flex-col items-center justify-center cursor-pointer transition-all duration-300 ${dragActive ? 'border-primary-500 bg-primary-50/50 dark:bg-primary-900/10' : 'border-gray-300 dark:border-dark-600 hover:border-primary-500 bg-white/50 dark:bg-dark-800/50'}`}
+              >
+                <input 
+                  id="image-upload-input"
+                  type="file" 
+                  multiple 
+                  accept="image/*"
+                  onChange={handleChange}
+                  className="hidden" 
+                />
+                <UploadCloud className={`w-10 h-10 mb-3 transition-colors duration-300 ${dragActive ? 'text-primary-500' : 'text-gray-400 group-hover:text-primary-500'}`} />
+                <p className="text-sm font-semibold text-gray-700 dark:text-gray-200 text-center">
+                  Drag & drop images here, or <span className="text-primary-600 dark:text-primary-400 hover:underline">browse</span>
+                </p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 text-center">
+                  Supports JPG, PNG, WEBP (Max 5 files)
+                </p>
+              </div>
+
+              {/* Previews */}
+              {previews.length > 0 && (
+                <div className="grid grid-cols-5 gap-2 mt-4">
+                  {previews.map((preview, index) => (
+                    <div key={index} className="relative group aspect-square rounded-xl overflow-hidden border dark:border-dark-700 bg-gray-50 dark:bg-dark-900">
+                      <img src={preview} alt={`preview-${index}`} className="w-full h-full object-cover" />
+                      <button 
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          removeFile(index);
+                        }}
+                        className="absolute top-1 right-1 p-1 bg-red-500/80 hover:bg-red-600 text-white rounded-full transition-colors opacity-0 group-hover:opacity-100 shadow"
+                      >
+                        <X size={12} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
             <div className="flex items-center gap-2">
               <input type="checkbox" id="organic" checked={newProduct.isOrganic} onChange={e => setNewProduct({...newProduct, isOrganic: e.target.checked})} />
