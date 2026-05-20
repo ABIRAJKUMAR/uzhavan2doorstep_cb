@@ -9,12 +9,13 @@ import toast from 'react-hot-toast';
 import PaymentModal from '../components/PaymentModal';
 
 const RetailerDashboard = () => {
-  const { token } = useSelector(state => state.auth);
+  const { token, user } = useSelector(state => state.auth);
   const { items, total } = useSelector(state => state.cart);
   const dispatch = useDispatch();
   const [orders, setOrders] = useState([]);
   const [activeTab, setActiveTab] = useState('cart');
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [deliveryAddress, setDeliveryAddress] = useState(user?.location || '');
 
   useEffect(() => {
     fetchOrders();
@@ -33,6 +34,10 @@ const RetailerDashboard = () => {
 
   const handleCheckoutClick = () => {
     if (items.length === 0) return;
+    if (!deliveryAddress.trim()) {
+      toast.error('Please enter a delivery address first!');
+      return;
+    }
     setIsPaymentModalOpen(true);
   };
 
@@ -46,7 +51,7 @@ const RetailerDashboard = () => {
           quantity: item.cartQuantity,
           price: item.price
         })),
-        deliveryAddress: 'Home/Shop Address',
+        deliveryAddress: deliveryAddress.trim(),
         paymentMethod,
       }, {
         headers: { Authorization: `Bearer ${token}` }
@@ -145,9 +150,21 @@ const RetailerDashboard = () => {
                 <span>Delivery</span>
                 <span>Free</span>
               </div>
-              <div className="border-t border-gray-200 dark:border-dark-700 pt-4 mb-6 flex justify-between font-bold text-lg dark:text-white">
+              <div className="border-t border-gray-200 dark:border-dark-700 pt-4 mb-4 flex justify-between font-bold text-lg dark:text-white">
                 <span>Total</span>
                 <span className="text-primary-600">₹{total}</span>
+              </div>
+              <div className="mb-6">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2">
+                  Delivery Address / City / District
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter district (e.g., Salem, Madurai...)"
+                  value={deliveryAddress}
+                  onChange={(e) => setDeliveryAddress(e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl dark:bg-dark-800 dark:border-dark-600 dark:text-white text-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
+                />
               </div>
               <button 
                 onClick={handleCheckoutClick} 

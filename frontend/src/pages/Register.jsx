@@ -127,6 +127,10 @@ const Register = () => {
                   <label className="block text-sm font-medium mb-1 dark:text-gray-300">GST Number</label>
                   <input name="gstNumber" type="text" onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded-xl dark:bg-dark-800 dark:border-dark-600 dark:text-white" />
                 </div>
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium mb-1 dark:text-gray-300">Shop Location / District</label>
+                  <input name="location" type="text" required onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded-xl dark:bg-dark-800 dark:border-dark-600 dark:text-white" placeholder="e.g. Madurai, Coimbatore, Chennai..." />
+                </div>
               </>
             )}
             
